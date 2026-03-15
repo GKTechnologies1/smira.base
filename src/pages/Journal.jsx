@@ -55,7 +55,7 @@ export default function Journal() {
     <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Journal</h1>
+          <h1 className="text-2xl font-lora font-medium">Journal</h1>
           <p className="text-sm text-muted-foreground mt-1">Your reflections and daily entries</p>
         </div>
         <div className="flex gap-2">
@@ -87,13 +87,16 @@ export default function Journal() {
           <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
         </div>
       ) : entries.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
-            <BookOpen className="w-8 h-8 text-accent" />
-          </div>
-          <h3 className="font-semibold mb-2">No journal entries yet</h3>
-          <p className="text-sm text-muted-foreground mb-4">Start capturing your thoughts and reflections</p>
-          <Button onClick={() => setShowForm(true)} className="rounded-xl">Write your first entry</Button>
+        <div className="text-center py-20 fade-up fade-up-1">
+          <svg viewBox="0 0 120 100" className="w-32 h-28 mx-auto mb-6 opacity-60" fill="none">
+            <path d="M20 80 Q20 20 60 15 Q100 20 100 80" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+            <path d="M35 45 Q60 38 85 45" stroke="hsl(var(--accent))" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M35 55 Q60 50 75 55" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
+            <path d="M35 65 Q55 61 65 65" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+            <circle cx="60" cy="88" r="3" fill="hsl(var(--accent))" opacity="0.6"/>
+          </svg>
+          <p className="font-lora text-lg text-foreground/70 mb-4">Your story starts here.<br/>Tell me about your day.</p>
+          <Button onClick={() => setShowForm(true)} className="rounded-3xl px-6">Write your first entry</Button>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
