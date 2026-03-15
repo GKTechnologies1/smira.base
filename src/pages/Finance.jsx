@@ -222,6 +222,7 @@ export default function Finance() {
         transaction={editTarget}
         onSave={handleSaveEdit}
         onClose={() => setEditTarget(null)}
+        onDeleteRequest={(tx) => setDeleteTarget(tx)}
       />
 
       {/* Delete Sheet */}
