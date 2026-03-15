@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Sparkles, ChevronRight, Clock, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ChevronRight, Clock, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const FunctionDisplay = ({ toolCall }) => {
   const [expanded, setExpanded] = useState(false);
@@ -21,12 +22,12 @@ const FunctionDisplay = ({ toolCall }) => {
 
   const statusConfig = {
     pending: { icon: Clock, color: 'text-muted-foreground', spin: false },
-    running: { icon: Loader2, color: 'text-primary', spin: true },
-    in_progress: { icon: Loader2, color: 'text-primary', spin: true },
+    running: { icon: Loader2, color: 'text-teal', spin: true },
+    in_progress: { icon: Loader2, color: 'text-teal', spin: true },
     completed: isError
       ? { icon: AlertCircle, color: 'text-destructive', spin: false }
-      : { icon: CheckCircle2, color: 'text-primary', spin: false },
-    success: { icon: CheckCircle2, color: 'text-primary', spin: false },
+      : { icon: CheckCircle2, color: 'text-teal', spin: false },
+    success: { icon: CheckCircle2, color: 'text-teal', spin: false },
     failed: { icon: AlertCircle, color: 'text-destructive', spin: false },
     error: { icon: AlertCircle, color: 'text-destructive', spin: false },
   }[status] || { icon: Clock, color: 'text-muted-foreground', spin: false };
@@ -72,28 +73,46 @@ export default function MessageBubble({ message }) {
   const isUser = message.role === 'user';
 
   return (
-    <div className={cn("flex gap-3", isUser ? "justify-end" : "justify-start")}>
+    <motion.div
+      className={cn("flex gap-3", isUser ? "justify-end" : "justify-start")}
+      initial={{ opacity: 0, scale: 0.92 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+    >
       {!isUser && (
-        <div className="w-8 h-8 rounded-2xl bg-primary flex items-center justify-center flex-shrink-0 mt-1">
-          <Sparkles className="w-4 h-4 text-primary-foreground" />
+        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 text-base"
+          style={{ background: 'linear-gradient(135deg, #0D1B2A, #0a2f26)', border: '1px solid #00C9A720' }}>
+          ✦
         </div>
       )}
       <div className={cn("max-w-[80%]", isUser && "flex flex-col items-end")}>
         {message.content && (
-          <div className={cn(
-            "rounded-2xl px-4 py-3",
-            isUser
-              ? "bg-primary text-primary-foreground rounded-br-md"
-              : "bg-card border border-border rounded-bl-md"
-          )}>
+          <motion.div
+            className={cn(
+              "rounded-[20px] px-4 py-3 relative overflow-hidden",
+              isUser
+                ? "bg-midnight text-white rounded-br-md"
+                : "bg-card rounded-bl-md"
+            )}
+            style={!isUser ? { border: '1px solid hsl(var(--border) / 0.5)' } : undefined}
+          >
+            {/* Shimmer sweep on Smira replies */}
+            {!isUser && (
+              <span className="absolute inset-0 pointer-events-none shimmer-sweep" />
+            )}
             {isUser ? (
               <p className="text-sm leading-relaxed">{message.content}</p>
             ) : (
-              <ReactMarkdown className="text-sm prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+              <ReactMarkdown
+                className="text-sm prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                components={{
+                  p: ({ children }) => <p className="my-1 leading-relaxed" style={{ color: 'hsl(var(--foreground) / 0.85)' }}>{children}</p>
+                }}
+              >
                 {message.content}
               </ReactMarkdown>
             )}
-          </div>
+          </motion.div>
         )}
         {message.tool_calls?.length > 0 && (
           <div className="space-y-1">
@@ -103,6 +122,6 @@ export default function MessageBubble({ message }) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
