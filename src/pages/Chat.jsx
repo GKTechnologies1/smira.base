@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { useTalk } from '../components/talk/TalkContext';
 
 export default function Chat() {
+  const { openTalk } = useTalk();
   const [conversations, setConversations] = useState([]);
   const [activeConversation, setActiveConversation] = useState(null);
   const [messages, setMessages] = useState([]);
