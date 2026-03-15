@@ -14,6 +14,8 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [muteVoice, setMuteVoice] = useState(false);
+  const prevMessageCountRef = useRef(0);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
