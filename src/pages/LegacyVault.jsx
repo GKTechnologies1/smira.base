@@ -176,14 +176,17 @@ export default function LegacyVault() {
 
       {/* Tabs */}
       <div className="flex bg-secondary rounded-xl p-1 mb-6 w-fit">
-        {([['memories', 'Memories', Heart], ['messages', 'Letters', Mail]] as [string, string, React.ElementType][]).map(([k, label, TabIcon]) => (
-          <button key={k} onClick={() => setActiveTab(k)} className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            activeTab === k ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}>
-            <Icon className="w-4 h-4" /> {label}
-          </button>
-        ))}
+        {[[`memories`, 'Memories', Heart], [`messages`, 'Letters', Mail]].map(([k, label, TabIcon]) => {
+          const TIcon = TabIcon;
+          return (
+            <button key={k} onClick={() => setActiveTab(k)} className={cn(
+              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+              activeTab === k ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
+            )}>
+              <TIcon className="w-4 h-4" /> {label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Content */}
