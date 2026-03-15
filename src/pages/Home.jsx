@@ -10,6 +10,7 @@ import DailyCheckIn from '../components/home/DailyCheckIn';
 import CalendarView from '../components/home/CalendarView';
 import SmartReminder from '../components/notifications/SmartReminder';
 import AIInsightsDashboard from '../components/home/AIInsightsDashboard';
+import LanguagePicker from '../components/voice/LanguagePicker';
 
 export default function Home() {
   const { data: tasks = [] } = useQuery({
@@ -27,6 +28,7 @@ export default function Home() {
     <>
       <DailyCheckIn />
       <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto space-y-8">
+        <div className="flex justify-end"><LanguagePicker compact /></div>
         <GreetingCard />
         <SmartReminder tasks={tasks} journals={journals} />
         <StatsOverview />
