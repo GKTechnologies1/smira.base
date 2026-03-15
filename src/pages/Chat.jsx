@@ -74,9 +74,13 @@ export default function Chat() {
     setShowSidebar(false);
   };
 
-  const sendMessage = async (content) => {
+  const sendMessage = async (content, isVoice = false) => {
     setSending(true);
-    await base44.agents.addMessage(activeConversation, { role: 'user', content });
+    await base44.agents.addMessage(activeConversation, {
+      role: 'user',
+      content,
+      metadata: isVoice ? { isVoice: true } : undefined,
+    });
     setSending(false);
   };
 
