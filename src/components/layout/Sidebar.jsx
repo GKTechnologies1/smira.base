@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   MessageCircle, BookOpen, CheckSquare, Wallet, 
-  Heart, Clock, Mail, Menu, X, Sparkles
+  Heart, Clock, Mail, Menu, X, Sparkles, Target, BarChart2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -16,6 +16,8 @@ const navItems = [
   { path: '/Memories', label: 'Memories', icon: Heart },
   { path: '/Timeline', label: 'Timeline', icon: Clock },
   { path: '/FutureMessages', label: 'Future Messages', icon: Mail },
+  { path: '/Goals', label: 'Goals', icon: Target },
+  { path: '/Analytics', label: 'Analytics', icon: BarChart2 },
 ];
 
 export default function Sidebar() {

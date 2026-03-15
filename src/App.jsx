@@ -15,6 +15,8 @@ import Finance from './pages/Finance';
 import Memories from './pages/Memories';
 import Timeline from './pages/Timeline';
 import FutureMessages from './pages/FutureMessages';
+import Goals from './pages/Goals';
+import Analytics from './pages/Analytics';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +50,8 @@ const AuthenticatedApp = () => {
         <Route path="/Memories" element={<Memories />} />
         <Route path="/Timeline" element={<Timeline />} />
         <Route path="/FutureMessages" element={<FutureMessages />} />
+        <Route path="/Goals" element={<Goals />} />
+        <Route path="/Analytics" element={<Analytics />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

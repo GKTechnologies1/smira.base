@@ -5,6 +5,7 @@ import StatsOverview from '../components/home/StatsOverview';
 import RecentActivity from '../components/home/RecentActivity';
 import OnThisDay from '../components/home/OnThisDay';
 import DailyCheckIn from '../components/home/DailyCheckIn';
+import CalendarView from '../components/home/CalendarView';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <GreetingCard />
         <StatsOverview />
         <OnThisDay />
+        <CalendarView />
         <QuickActions />
         <RecentActivity />
       </div>
