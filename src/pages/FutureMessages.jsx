@@ -217,7 +217,7 @@ export default function FutureMessages() {
             const isDelivered = msg.status === 'delivered';
             const isPending = msg.status === 'condition_pending';
             return (
-              <div key={msg.id} className={`bg-card rounded-2xl border p-5 hover:shadow-md transition-all ${isDelivered ? 'border-primary/30 bg-primary/5' : 'border-border'}`}>
+              <div key={msg.id} onClick={() => setViewingMsg(msg)} className={`bg-card rounded-2xl border p-5 hover:shadow-md transition-all cursor-pointer ${isDelivered ? 'border-primary/30 bg-primary/5' : 'border-border'}`}>
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-sm">{msg.title || `To ${msg.recipient_name}`}</h3>
                   <Badge variant="outline" className="text-xs rounded-lg flex-shrink-0 ml-2">
