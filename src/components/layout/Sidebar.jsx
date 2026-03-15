@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   MessageCircle, BookOpen, CheckSquare, Wallet, 
-  Heart, Clock, Mail, Menu, X, Target, BarChart2, Map, Users, Shield, Flame, Mic, Home
+  Heart, Clock, Mail, Menu, X, Target, BarChart2, Map, Users, Shield, Flame, Mic, Home, UserCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -24,6 +24,7 @@ const navItems = [
   { path: '/LegacyVault', label: 'Legacy Vault', icon: Shield },
   { path: '/Habits', label: 'Daily Habits', icon: Flame },
   { path: '/VoiceMemory', label: 'Voice Memory', icon: Mic },
+  { path: '/People', label: 'People', icon: UserCircle },
 ];
 
 export default function Sidebar() {
