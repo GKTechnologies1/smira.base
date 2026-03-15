@@ -12,6 +12,10 @@ import SmartReminder from '../components/notifications/SmartReminder';
 import AIInsightsDashboard from '../components/home/AIInsightsDashboard';
 import LanguagePicker from '../components/voice/LanguagePicker';
 
+const sections = [
+  'greeting', 'reminder', 'stats', 'onthisday', 'calendar', 'insights', 'actions', 'activity'
+];
+
 export default function Home() {
   const { data: tasks = [] } = useQuery({
     queryKey: ['tasks'],
@@ -27,16 +31,18 @@ export default function Home() {
   return (
     <>
       <DailyCheckIn />
-      <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto space-y-8">
-        <div className="flex justify-end"><LanguagePicker compact /></div>
-        <GreetingCard />
-        <SmartReminder tasks={tasks} journals={journals} />
-        <StatsOverview />
-        <OnThisDay />
-        <CalendarView />
-        <AIInsightsDashboard />
-        <QuickActions />
-        <RecentActivity />
+      <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto space-y-6">
+        <div className="flex justify-end fade-up fade-up-1">
+          <LanguagePicker compact />
+        </div>
+        <div className="fade-up fade-up-1"><GreetingCard /></div>
+        <div className="fade-up fade-up-2"><SmartReminder tasks={tasks} journals={journals} /></div>
+        <div className="fade-up fade-up-3"><StatsOverview /></div>
+        <div className="fade-up fade-up-4"><OnThisDay /></div>
+        <div className="fade-up fade-up-5"><CalendarView /></div>
+        <div className="fade-up fade-up-6"><AIInsightsDashboard /></div>
+        <div className="fade-up fade-up-7"><QuickActions /></div>
+        <div className="fade-up fade-up-8"><RecentActivity /></div>
       </div>
     </>
   );
