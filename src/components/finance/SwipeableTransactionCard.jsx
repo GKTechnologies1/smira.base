@@ -1,148 +1,160 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { ArrowUpRight, ArrowDownRight, Pencil, Trash2, MoreVertical } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { motion, useMotionValue, animate } from 'framer-motion';
+import { Pencil, Trash2, UtensilsCrossed, Car, Home, Zap, Play, Heart, ShoppingBag, GraduationCap, ArrowUpRight, Briefcase, TrendingUp, Gift, FileText, PiggyBank, Package } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
-const categoryLabels = {
-  food: '🍔 Food', transport: '🚗 Transport', housing: '🏠 Housing', utilities: '💡 Utilities',
-  entertainment: '🎬 Entertainment', health: '❤️ Health', shopping: '🛍 Shopping',
-  education: '📚 Education', salary: '💼 Salary', freelance: '💻 Freelance',
-  investment: '📈 Investment', gift: '🎁 Gift', bills: '📄 Bills', savings: '🏦 Savings', other: '📦 Other'
+const CATEGORY_META = {
+  food:          { icon: UtensilsCrossed, color: '#FF8C69', bg: '#FFF0EB' },
+  transport:     { icon: Car,            color: '#6B8CFF', bg: '#EEF0FF' },
+  housing:       { icon: Home,           color: '#7B61FF', bg: '#F0EEFF' },
+  utilities:     { icon: Zap,            color: '#F5A623', bg: '#FFF8EC' },
+  entertainment: { icon: Play,           color: '#E85D8A', bg: '#FDEEF4' },
+  health:        { icon: Heart,          color: '#E85D8A', bg: '#FDEEF4' },
+  shopping:      { icon: ShoppingBag,    color: '#FF8C69', bg: '#FFF0EB' },
+  education:     { icon: GraduationCap,  color: '#6B8CFF', bg: '#EEF0FF' },
+  salary:        { icon: ArrowUpRight,   color: '#1D9E75', bg: '#E6F7F2' },
+  freelance:     { icon: Briefcase,      color: '#1D9E75', bg: '#E6F7F2' },
+  investment:    { icon: TrendingUp,     color: '#1D9E75', bg: '#E6F7F2' },
+  gift:          { icon: Gift,           color: '#E85D8A', bg: '#FDEEF4' },
+  bills:         { icon: FileText,       color: '#6B7280', bg: '#F3F4F6' },
+  savings:       { icon: PiggyBank,      color: '#1D9E75', bg: '#E6F7F2' },
+  other:         { icon: Package,        color: '#9CA3AF', bg: '#F3F4F6' },
 };
 
-const SWIPE_THRESHOLD = 80;
-const REVEAL_WIDTH = 130;
+const REVEAL_WIDTH = 120;
+const SWIPE_THRESHOLD = 60;
 
 export default function SwipeableTransactionCard({ transaction, onEdit, onDelete, selected, onLongPress, selectionMode, onClick }) {
   const x = useMotionValue(0);
   const [revealed, setRevealed] = useState(false);
-  const [showDesktopMenu, setShowDesktopMenu] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const longPressTimer = useRef(null);
-  const startX = useRef(null);
   const isIncome = transaction.type === 'income';
+  const meta = CATEGORY_META[transaction.category] || CATEGORY_META.other;
+  const Icon = meta.icon;
 
   const handleDragEnd = useCallback((_, info) => {
     if (info.offset.x < -SWIPE_THRESHOLD) {
-      animate(x, -REVEAL_WIDTH, { type: 'spring', stiffness: 300, damping: 30 });
+      animate(x, -REVEAL_WIDTH, { type: 'spring', stiffness: 320, damping: 28 });
       setRevealed(true);
     } else {
-      animate(x, 0, { type: 'spring', stiffness: 300, damping: 30 });
+      animate(x, 0, { type: 'spring', stiffness: 320, damping: 28 });
       setRevealed(false);
     }
   }, [x]);
 
-  const closeSwipe = useCallback(() => {
-    animate(x, 0, { type: 'spring', stiffness: 300, damping: 30 });
+  const snapBack = useCallback(() => {
+    animate(x, 0, { type: 'spring', stiffness: 320, damping: 28 });
     setRevealed(false);
   }, [x]);
 
-  const handlePointerDown = () => {
-    longPressTimer.current = setTimeout(() => {
-      onLongPress?.(transaction.id);
-    }, 500);
-  };
+  const handleEdit = () => { snapBack(); onEdit(transaction); };
+  const handleDelete = () => { snapBack(); onDelete(transaction); };
 
+  const handlePointerDown = () => {
+    longPressTimer.current = setTimeout(() => onLongPress?.(transaction.id), 500);
+  };
   const handlePointerUp = () => clearTimeout(longPressTimer.current);
 
-  const handleEdit = () => { closeSwipe(); onEdit(transaction); };
-  const handleDelete = () => { closeSwipe(); onDelete(transaction); };
+  const dateStr = transaction.date
+    ? format(new Date(transaction.date), 'MMM d')
+    : format(new Date(transaction.created_date), 'MMM d');
+
+  const catLabel = transaction.category ? transaction.category.charAt(0).toUpperCase() + transaction.category.slice(1) : 'Other';
 
   return (
-    <div className="relative overflow-hidden rounded-2xl group">
-      {/* Actions behind card */}
-      <div className="absolute right-0 top-0 bottom-0 flex items-stretch">
-        <button
+    <div
+      className="relative overflow-hidden"
+      style={{ borderRadius: 16 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Revealed action buttons */}
+      <div className="absolute inset-y-0 right-0 flex items-stretch" style={{ width: REVEAL_WIDTH }}>
+        <motion.button
           onClick={handleEdit}
-          className="flex items-center justify-center w-16 bg-amber-100 hover:bg-amber-200 transition-colors"
+          animate={revealed ? { scale: 1.05 } : { scale: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          className="flex-1 flex flex-col items-center justify-center gap-1"
+          style={{ background: '#FAEEDA' }}
         >
-          <Pencil className="w-4 h-4 text-amber-700" />
-        </button>
-        <button
+          <Pencil className="w-4 h-4" style={{ color: '#854F0B' }} />
+          <span className="text-xs font-medium" style={{ color: '#854F0B' }}>Edit</span>
+        </motion.button>
+        <motion.button
           onClick={handleDelete}
-          className="flex items-center justify-center w-16 bg-red-100 hover:bg-red-200 transition-colors rounded-r-2xl"
+          animate={revealed ? { scale: 1.05 } : { scale: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          className="flex-1 flex flex-col items-center justify-center gap-1"
+          style={{ background: '#FCEBEB', borderRadius: '0 16px 16px 0' }}
         >
-          <Trash2 className="w-4 h-4 text-red-600" />
-        </button>
+          <Trash2 className="w-4 h-4" style={{ color: '#A32D2D' }} />
+          <span className="text-xs font-medium" style={{ color: '#A32D2D' }}>Delete</span>
+        </motion.button>
       </div>
 
       {/* Swipeable card */}
       <motion.div
-        drag="x"
+        drag={selectionMode ? false : 'x'}
         dragConstraints={{ left: -REVEAL_WIDTH, right: 0 }}
-        dragElastic={0.1}
+        dragElastic={0.08}
         onDragEnd={handleDragEnd}
-        style={{ x }}
+        style={{ x, borderRadius: 16 }}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
-        className="relative z-10 touch-pan-y"
+        onClick={selectionMode ? onClick : (revealed ? snapBack : undefined)}
+        className="relative z-10 bg-card touch-pan-y"
+        whileTap={{ scale: 0.99 }}
       >
         <div
-          className={cn(
-            "flex items-center gap-4 p-4 bg-card border border-border transition-all cursor-pointer rounded-2xl",
-            selected && "ring-2 ring-primary bg-primary/5"
-          )}
-          onClick={selectionMode ? onClick : undefined}
-          onMouseEnter={() => setShowDesktopMenu(true)}
-          onMouseLeave={() => setShowDesktopMenu(false)}
+          className={cn("flex items-center gap-4 select-none", selected && "ring-2 ring-primary bg-primary/5")}
+          style={{ padding: '14px 16px', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 16 }}
         >
+          {/* Selection circle */}
           {selectionMode && (
-            <div className={cn(
-              "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all",
-              selected ? "bg-primary border-primary" : "border-muted-foreground"
-            )}>
+            <div className={cn("w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+              selected ? "bg-primary border-primary" : "border-muted-foreground")}>
               {selected && <div className="w-2 h-2 rounded-full bg-white" />}
             </div>
           )}
 
-          <div className={cn(
-            "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-            isIncome ? "bg-primary/10" : "bg-chart-4/10"
-          )}>
-            {isIncome
-              ? <ArrowDownRight className="w-5 h-5 text-primary" />
-              : <ArrowUpRight className="w-5 h-5 text-chart-4" />
-            }
+          {/* Category icon circle */}
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: meta.bg }}>
+            <Icon className="w-5 h-5" style={{ color: meta.color }} />
           </div>
 
+          {/* Content */}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{transaction.description}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className="text-xs rounded-lg">
-                {categoryLabels[transaction.category] || transaction.category}
-              </Badge>
-              <span className="text-xs text-muted-foreground">
-                {transaction.date ? format(new Date(transaction.date), 'MMM d') : format(new Date(transaction.created_date), 'MMM d')}
-              </span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-xs text-muted-foreground">{catLabel}</span>
+              <span className="text-xs text-muted-foreground/40">·</span>
+              <span className="text-xs text-muted-foreground">{dateStr}</span>
             </div>
           </div>
 
-          <p className={cn("text-sm font-semibold", isIncome ? "text-primary" : "text-foreground")}>
-            {isIncome ? '+' : '-'}${transaction.amount?.toFixed(2)}
+          {/* Amount */}
+          <p className="text-sm font-semibold flex-shrink-0" style={{ color: isIncome ? '#1D9E75' : '#A32D2D' }}>
+            {isIncome ? '+' : '−'}${transaction.amount?.toFixed(2)}
           </p>
 
-          {/* Desktop three-dot menu */}
-          <div className={cn("hidden md:flex items-center transition-opacity", showDesktopMenu ? "opacity-100" : "opacity-0")}>
-            <div className="relative">
-              <button
-                className="p-1 rounded-lg hover:bg-secondary text-muted-foreground"
-                onClick={(e) => { e.stopPropagation(); setShowDesktopMenu(v => !v); }}
-              >
-                <MoreVertical className="w-4 h-4" />
-              </button>
-              {showDesktopMenu && (
-                <div className="absolute right-0 top-8 z-50 bg-card border border-border rounded-xl shadow-lg overflow-hidden w-36">
-                  <button onClick={handleEdit} className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-secondary transition-colors">
-                    <Pencil className="w-3.5 h-3.5 text-amber-600" /> Edit
-                  </button>
-                  <button onClick={handleDelete} className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-secondary transition-colors text-red-600">
-                    <Trash2 className="w-3.5 h-3.5" /> Delete
-                  </button>
-                </div>
-              )}
-            </div>
+          {/* Desktop hover actions — fade in/out */}
+          <div className={cn(
+            "hidden md:flex items-center gap-1 transition-opacity duration-150",
+            hovered ? "opacity-100" : "opacity-0 pointer-events-none"
+          )}>
+            <button onClick={(e) => { e.stopPropagation(); handleEdit(); }}
+              className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-amber-700 transition-colors">
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); handleDelete(); }}
+              className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground transition-colors"
+              style={{ '--hover-color': '#A32D2D' }}>
+              <Trash2 className="w-3.5 h-3.5 hover:text-red-600" />
+            </button>
           </div>
         </div>
       </motion.div>
