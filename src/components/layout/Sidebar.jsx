@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   MessageCircle, BookOpen, CheckSquare, Wallet, 
-  Heart, Clock, Mail, Menu, X, Target, BarChart2, Map, Users, Shield, Flame, Mic, Home, UserCircle
+  Heart, Clock, Mail, Menu, X, Target, BarChart2, Map, Users, Shield, Flame, Mic, Home, UserCircle, Trash2, Moon, Sun
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
+import AccountDeletion from './AccountDeletion';
 
 const navItems = [
   { path: '/Home', label: 'Home', icon: Home },
@@ -30,9 +31,34 @@ const navItems = [
 export default function Sidebar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('smira-theme');
+      if (stored) return stored === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
   const activeIndex = navItems.findIndex(i => i.path === location.pathname);
   const itemRefs = useRef([]);
   const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 });
+
+  // Apply dark mode
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+    localStorage.setItem('smira-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
+  // Listen for system preference changes
+  useEffect(() => {
+    const stored = localStorage.getItem('smira-theme');
+    if (stored) return; // user has overridden
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => setDarkMode(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const el = itemRefs.current[activeIndex];
