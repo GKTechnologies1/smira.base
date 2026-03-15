@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import VoiceMicButton from '../voice/VoiceMicButton';
+import WaveformPlayer from '../voice/WaveformPlayer';
 
 const categories = {
   expense: ['food','transport','housing','utilities','entertainment','health','shopping','education','bills','other'],
@@ -17,6 +19,8 @@ export default function TransactionForm({ onSave, onCancel }) {
     category: 'other',
     date: new Date().toISOString().split('T')[0],
     note: '',
+    voice_transcript: '',
+    voice_url: '',
   });
 
   const handleSubmit = (e) => {
@@ -32,13 +36,17 @@ export default function TransactionForm({ onSave, onCancel }) {
           <TabsTrigger value="income" className="flex-1 rounded-lg">Income</TabsTrigger>
         </TabsList>
       </Tabs>
-      <Input
-        placeholder="What was it for?"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-        className="rounded-xl bg-secondary border-none h-12"
-        required
-      />
+      <div className="flex items-center gap-2">
+        <Input
+          placeholder="What was it for?"
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          className="rounded-xl bg-secondary border-none h-12 flex-1"
+          required
+        />
+        <VoiceMicButton onResult={(tx, url) => setForm(f => ({ ...f, description: f.description || tx, voice_transcript: tx, voice_url: url }))} size="sm" />
+      </div>
+      {form.voice_url && <WaveformPlayer audioUrl={form.voice_url} transcript={form.voice_transcript} />}
       <div className="grid grid-cols-2 gap-3">
         <Input
           type="number"
