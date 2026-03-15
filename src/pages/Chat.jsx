@@ -131,9 +131,18 @@ export default function Chat() {
             <p className="text-xs text-muted-foreground">Here with you</p>
           </div>
         </div>
-        <Button onClick={createNewConversation} variant="outline" size="sm" className="rounded-xl">
-          <Plus className="w-4 h-4 mr-1" /> New
-        </Button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMuteVoice(v => !v)}
+            className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground"
+            title={muteVoice ? 'Unmute Smira voice' : 'Mute Smira voice'}
+          >
+            {muteVoice ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+          <Button onClick={createNewConversation} variant="outline" size="sm" className="rounded-xl">
+            <Plus className="w-4 h-4 mr-1" /> New
+          </Button>
+        </div>
       </div>
 
       {/* Conversation sidebar (mobile overlay, hidden on desktop for simplicity) */}
