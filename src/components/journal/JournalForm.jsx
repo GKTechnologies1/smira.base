@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { X } from 'lucide-react';
 import VoiceMicButton from '../voice/VoiceMicButton';
 import WaveformPlayer from '../voice/WaveformPlayer';
+import { cn } from '@/lib/utils';
 
 const moods = [
   { value: 'joyful', label: '😊 Joyful' },
@@ -63,14 +64,14 @@ export default function JournalForm({ entry, onSave, onCancel }) {
         placeholder="Entry title (optional)"
         value={form.title}
         onChange={(e) => setForm({ ...form, title: e.target.value })}
-        className="rounded-xl text-lg font-medium border-none bg-secondary px-4 py-3 h-auto"
+        className="rounded-2xl font-lora text-base font-medium border-none bg-secondary px-4 py-3 h-auto"
       />
       <div className="relative">
         <Textarea
           placeholder="What's on your mind today?"
           value={form.content}
           onChange={(e) => setForm({ ...form, content: e.target.value })}
-          className="rounded-xl min-h-[200px] border-none bg-secondary px-4 py-3 resize-none pr-12"
+          className="rounded-2xl min-h-[200px] border-none bg-secondary px-4 py-3 resize-none pr-12"
           required
         />
         <div className="absolute bottom-3 right-3">
@@ -78,32 +79,51 @@ export default function JournalForm({ entry, onSave, onCancel }) {
         </div>
       </div>
       {form.voice_url && <WaveformPlayer audioUrl={form.voice_url} transcript={form.voice_transcript} />}
-      <div className="flex flex-wrap gap-3">
-        <Select value={form.mood} onValueChange={(v) => setForm({ ...form, mood: v })}>
-          <SelectTrigger className="w-44 rounded-xl">
-            <SelectValue placeholder="How are you feeling?" />
-          </SelectTrigger>
-          <SelectContent>
-            {moods.map(m => (
-              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-          <SelectTrigger className="w-44 rounded-xl">
-            <SelectValue placeholder="Entry type" />
-          </SelectTrigger>
-          <SelectContent>
-            {types.map(t => (
-              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+
+      {/* Mood chips */}
+      <div>
+        <p className="text-xs text-muted-foreground mb-2 font-medium">How are you feeling?</p>
+        <div className="flex flex-wrap gap-2">
+          {moods.map(m => {
+            const isSelected = form.mood === m.value;
+            return (
+              <button
+                key={m.value}
+                type="button"
+                onClick={() => setForm({ ...form, mood: m.value })}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200",
+                  isSelected
+                    ? "bg-teal text-white shadow-sm"
+                    : "bg-secondary text-muted-foreground opacity-70 hover:opacity-100"
+                )}
+                style={{
+                  paddingLeft: isSelected ? '14px' : '12px',
+                  paddingRight: isSelected ? '14px' : '12px',
+                }}
+              >
+                {m.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
+        <SelectTrigger className="w-48 rounded-2xl">
+          <SelectValue placeholder="Entry type" />
+        </SelectTrigger>
+        <SelectContent>
+          {types.map(t => (
+            <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       {/* Tags */}
       <div className="flex flex-wrap items-center gap-2">
         {form.tags.map(tag => (
-          <span key={tag} className="flex items-center gap-1 px-3 py-1 rounded-lg bg-secondary text-sm">
+          <span key={tag} className="flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
             {tag}
             <button type="button" onClick={() => removeTag(tag)}>
               <X className="w-3 h-3" />
@@ -115,12 +135,12 @@ export default function JournalForm({ entry, onSave, onCancel }) {
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
-          className="w-32 rounded-xl h-8 text-sm"
+          className="w-28 rounded-full h-8 text-sm"
         />
       </div>
       <div className="flex justify-end gap-3 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel} className="rounded-xl">Cancel</Button>
-        <Button type="submit" className="rounded-xl">{entry ? 'Update' : 'Save Entry'}</Button>
+        <Button type="button" variant="outline" onClick={onCancel} className="rounded-3xl">Cancel</Button>
+        <Button type="submit" className="rounded-3xl">{entry ? 'Update' : 'Save Entry'}</Button>
       </div>
     </form>
   );
