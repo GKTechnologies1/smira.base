@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Lock, Unlock, Plus, Heart, Mail, Trash2, Eye, EyeOff, Star } from 'lucide-react';
+import VoiceMicButton from '../components/voice/VoiceMicButton';
+import WaveformPlayer from '../components/voice/WaveformPlayer';
 import { format, parseISO, isFuture } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -45,8 +47,8 @@ export default function LegacyVault() {
     enabled: unlocked,
   });
 
-  const [memForm, setMemForm] = useState({ title: '', content: '', category: 'milestone', date_of_memory: '', is_in_vault: true, unlock_date: '' });
-  const [msgForm, setMsgForm] = useState({ title: '', content: '', recipient_name: '', recipient_relationship: 'child', delivery_date: '', emotional_tone: 'loving', status: 'scheduled' });
+  const [memForm, setMemForm] = useState({ title: '', content: '', category: 'milestone', date_of_memory: '', is_in_vault: true, unlock_date: '', voice_transcript: '', voice_url: '' });
+  const [msgForm, setMsgForm] = useState({ title: '', content: '', recipient_name: '', recipient_relationship: 'child', delivery_date: '', emotional_tone: 'loving', status: 'scheduled', voice_transcript: '', voice_url: '' });
 
   const saveMemMutation = useMutation({
     mutationFn: (d) => base44.entities.Memory.create({ ...d, is_in_vault: true }),
@@ -277,7 +279,13 @@ export default function LegacyVault() {
           {formType === 'memory' ? (
             <div className="space-y-3">
               <Input placeholder="Memory title" value={memForm.title} onChange={e => setMemForm({ ...memForm, title: e.target.value })} className="rounded-xl bg-secondary border-none" />
-              <Textarea placeholder="Tell the story…" value={memForm.content} onChange={e => setMemForm({ ...memForm, content: e.target.value })} className="rounded-xl bg-secondary border-none min-h-[100px] resize-none" />
+              <div className="relative">
+                <Textarea placeholder="Tell the story…" value={memForm.content} onChange={e => setMemForm({ ...memForm, content: e.target.value })} className="rounded-xl bg-secondary border-none min-h-[100px] resize-none pr-12" />
+                <div className="absolute bottom-3 right-3">
+                  <VoiceMicButton onResult={(tx, url) => setMemForm(f => ({ ...f, content: f.content ? f.content + '\n' + tx : tx, voice_transcript: tx, voice_url: url }))} size="sm" />
+                </div>
+              </div>
+              {memForm.voice_url && <WaveformPlayer audioUrl={memForm.voice_url} transcript={memForm.voice_transcript} />}
               <div className="grid grid-cols-2 gap-3">
                 <Select value={memForm.category} onValueChange={v => setMemForm({ ...memForm, category: v })}>
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
@@ -297,7 +305,13 @@ export default function LegacyVault() {
           ) : (
             <div className="space-y-3">
               <Input placeholder="Letter title (optional)" value={msgForm.title} onChange={e => setMsgForm({ ...msgForm, title: e.target.value })} className="rounded-xl bg-secondary border-none" />
-              <Textarea placeholder="Write your letter…" value={msgForm.content} onChange={e => setMsgForm({ ...msgForm, content: e.target.value })} className="rounded-xl bg-secondary border-none min-h-[100px] resize-none" />
+              <div className="relative">
+                <Textarea placeholder="Write your letter…" value={msgForm.content} onChange={e => setMsgForm({ ...msgForm, content: e.target.value })} className="rounded-xl bg-secondary border-none min-h-[100px] resize-none pr-12" />
+                <div className="absolute bottom-3 right-3">
+                  <VoiceMicButton onResult={(tx, url) => setMsgForm(f => ({ ...f, content: f.content ? f.content + '\n' + tx : tx, voice_transcript: tx, voice_url: url }))} size="sm" />
+                </div>
+              </div>
+              {msgForm.voice_url && <WaveformPlayer audioUrl={msgForm.voice_url} transcript={msgForm.voice_transcript} />}
               <div className="grid grid-cols-2 gap-3">
                 <Input placeholder="Recipient name" value={msgForm.recipient_name} onChange={e => setMsgForm({ ...msgForm, recipient_name: e.target.value })} className="rounded-xl bg-secondary border-none" />
                 <Select value={msgForm.recipient_relationship} onValueChange={v => setMsgForm({ ...msgForm, recipient_relationship: v })}>
