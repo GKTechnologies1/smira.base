@@ -7,9 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Target, Loader2, Sparkles, ChevronRight, TrendingUp, CheckCircle2, DollarSign } from 'lucide-react';
+import { Plus, Target, Loader2, Sparkles, TrendingUp, CheckCircle2, DollarSign, Pencil, Trash2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { AnimatePresence, motion } from 'framer-motion';
+import { toast } from 'sonner';
 import MilestonePath from '../components/goals/MilestonePath';
+import EditGoalSheet from '../components/goals/EditGoalSheet';
 
 const CATEGORIES = ['health', 'career', 'relationships', 'finance', 'learning', 'creativity', 'mindfulness', 'other'];
 const catColors = {
@@ -27,6 +30,8 @@ export default function Goals() {
   const [msForm, setMsForm] = useState({ title: '', description: '', target_date: '', linked_finance_amount: '' });
   const [smiraSuggestion, setSmiraSuggestion] = useState('');
   const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+  const [editingGoal, setEditingGoal] = useState(null);
+  const [deletingGoal, setDeletingGoal] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: goals = [], isLoading } = useQuery({
@@ -55,6 +60,26 @@ export default function Goals() {
   const createGoal = useMutation({
     mutationFn: (d) => base44.entities.Goal.create(d),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['goals'] }); setShowGoalForm(false); setGoalForm({ title: '', description: '', category: 'other', target_date: '' }); },
+  });
+
+  const updateGoal = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Goal.update(id, data),
+    onSuccess: (_, { id, data }) => {
+      queryClient.setQueryData(['goals'], old => (old || []).map(g => g.id === id ? { ...g, ...data } : g));
+      setSelectedGoal(prev => prev ? { ...prev, ...data } : prev);
+      setEditingGoal(null);
+      toast.success('Goal updated');
+    },
+  });
+
+  const deleteGoal = useMutation({
+    mutationFn: (id) => base44.entities.Goal.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      setSelectedGoal(null);
+      setDeletingGoal(null);
+      toast('Goal deleted');
+    },
   });
 
   const createMilestone = useMutation({
