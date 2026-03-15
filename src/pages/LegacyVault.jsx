@@ -7,16 +7,159 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Lock, Unlock, Plus, Heart, Mail, Trash2, Eye, EyeOff, Star } from 'lucide-react';
+import { Shield, Lock, Unlock, Plus, Heart, Mail, Trash2, Eye, EyeOff, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import VoiceMicButton from '../components/voice/VoiceMicButton';
 import WaveformPlayer from '../components/voice/WaveformPlayer';
 import { format, parseISO, isFuture } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const VAULT_PIN_KEY = 'smira_vault_pin';
 
 function getStoredPin() { return localStorage.getItem(VAULT_PIN_KEY); }
 function setStoredPin(pin) { localStorage.setItem(VAULT_PIN_KEY, pin); }
+
+function MemoryCard({ m, onDelete }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="bg-card rounded-[20px] transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
+      <button
+        className="w-full text-left p-5"
+        onClick={() => setExpanded(v => !v)}
+      >
+        <div className="flex items-start gap-2 mb-2">
+          <Shield className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm pr-8">{m.title}</h3>
+            <AnimatePresence initial={false}>
+              {!expanded && (
+                <motion.p
+                  key="preview"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-sm text-muted-foreground line-clamp-2 mt-1"
+                >
+                  {m.content}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="flex-shrink-0 text-muted-foreground">
+            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 ml-6 flex-wrap">
+          <Badge variant="outline" className="text-xs rounded-lg">{m.category?.replace('_', ' ')}</Badge>
+          {m.date_of_memory && <span className="text-xs text-muted-foreground">{format(parseISO(m.date_of_memory), 'MMM d, yyyy')}</span>}
+          {m.people_involved?.length > 0 && <span className="text-xs text-muted-foreground">with {m.people_involved.join(', ')}</span>}
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-5 pb-5 ml-6">
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">{m.content}</p>
+              {m.location_name && (
+                <p className="text-xs text-muted-foreground mt-3">📍 {m.location_name}</p>
+              )}
+              {m.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {m.tags.map(tag => (
+                    <span key={tag} className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">#{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute top-3 right-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onClick={(e) => { e.stopPropagation(); onDelete(m.id); }} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MessageCard({ m, onDelete }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="bg-card rounded-[20px] transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
+      <button
+        className="w-full text-left p-5"
+        onClick={() => setExpanded(v => !v)}
+      >
+        <div className="flex items-start gap-2 mb-2">
+          <Mail className="w-4 h-4 text-chart-3 flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-sm pr-6">{m.title || `To ${m.recipient_name}`}</p>
+            <p className="text-xs text-muted-foreground">For {m.recipient_name} · {m.recipient_relationship}</p>
+            <AnimatePresence initial={false}>
+              {!expanded && (
+                <motion.p
+                  key="preview"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-sm text-muted-foreground line-clamp-2 mt-1"
+                >
+                  {m.content}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="flex-shrink-0 text-muted-foreground">
+            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </div>
+        </div>
+        <div className="ml-6 flex items-center gap-2 flex-wrap">
+          {m.delivery_date && (
+            <div className="flex items-center gap-1.5 bg-chart-3/10 text-chart-3 px-2.5 py-1 rounded-lg text-xs font-medium">
+              <Lock className="w-3 h-3" />
+              Opens {format(parseISO(m.delivery_date), 'MMM d, yyyy')}
+            </div>
+          )}
+          <Badge variant="outline" className="text-xs rounded-lg">{m.emotional_tone}</Badge>
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-5 pb-5 ml-6">
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap font-lora italic">{m.content}</p>
+              {m.occasion && (
+                <p className="text-xs text-muted-foreground mt-3">Occasion: {m.occasion.replace('_', ' ')}</p>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute top-3 right-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onClick={(e) => { e.stopPropagation(); onDelete(m.id); }} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function LegacyVault() {
   const [unlocked, setUnlocked] = useState(false);
@@ -47,7 +190,7 @@ export default function LegacyVault() {
     enabled: unlocked,
   });
 
-  const [memForm, setMemForm] = useState({ title: '', content: '', category: 'milestone', date_of_memory: '', is_in_vault: true, unlock_date: '', voice_transcript: '', voice_url: '' });
+  const [memForm, setMemForm] = useState({ title: '', content: '', category: 'milestone', date_of_memory: '', is_in_vault: true, voice_transcript: '', voice_url: '' });
   const [msgForm, setMsgForm] = useState({ title: '', content: '', recipient_name: '', recipient_relationship: 'child', delivery_date: '', emotional_tone: 'loving', status: 'scheduled', voice_transcript: '', voice_url: '' });
 
   const saveMemMutation = useMutation({
@@ -84,7 +227,7 @@ export default function LegacyVault() {
       setPinError('');
       setPinInput('');
     } else {
-      setPinError('Incorrect PIN');
+      setPinError('Incorrect PIN. Try again.');
     }
   };
 
@@ -96,8 +239,8 @@ export default function LegacyVault() {
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Shield className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-xl font-bold mb-1">Set Vault PIN</h2>
-        <p className="text-sm text-muted-foreground mb-6">Choose a PIN to protect your Legacy Vault. This is stored locally on your device.</p>
+        <h2 className="text-xl font-lora font-medium mb-1">Protect your Vault</h2>
+        <p className="text-sm text-muted-foreground mb-6">Choose a PIN. It stays on your device and is only known to you.</p>
         <div className="space-y-3">
           <div className="relative">
             <Input type={showPin ? 'text' : 'password'} placeholder="Choose a PIN (min 4 digits)" value={pinInput} onChange={e => setPinInput(e.target.value)} className="rounded-xl text-center text-lg tracking-widest pr-10" maxLength={8} />
@@ -117,8 +260,8 @@ export default function LegacyVault() {
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Lock className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-xl font-bold mb-1">Legacy Vault</h2>
-        <p className="text-sm text-muted-foreground mb-6">Enter your PIN to access your most precious memories and messages.</p>
+        <h2 className="text-xl font-lora font-medium mb-1">Legacy Vault</h2>
+        <p className="text-sm text-muted-foreground mb-6">Enter your PIN to step inside your most precious memories.</p>
         <div className="space-y-3">
           <div className="relative">
             <Input type={showPin ? 'text' : 'password'} placeholder="Enter PIN" value={pinInput} onChange={e => setPinInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUnlock()} className="rounded-xl text-center text-lg tracking-widest pr-10" maxLength={8} />
@@ -136,7 +279,6 @@ export default function LegacyVault() {
 
   return (
     <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/20 to-chart-3/20 flex items-center justify-center">
@@ -157,7 +299,6 @@ export default function LegacyVault() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         <div className="bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-2xl p-4 text-center">
           <Heart className="w-5 h-5 text-primary mx-auto mb-1" />
@@ -167,18 +308,17 @@ export default function LegacyVault() {
         <div className="bg-gradient-to-br from-chart-3/10 to-transparent border border-chart-3/20 rounded-2xl p-4 text-center">
           <Mail className="w-5 h-5 text-chart-3 mx-auto mb-1" />
           <p className="text-xl font-bold text-chart-3">{scheduledMessages.length}</p>
-          <p className="text-xs text-muted-foreground">Scheduled Letters</p>
+          <p className="text-xs text-muted-foreground">Sealed Letters</p>
         </div>
         <div className="bg-gradient-to-br from-accent/20 to-transparent border border-accent/30 rounded-2xl p-4 text-center md:col-span-1 col-span-2">
           <Star className="w-5 h-5 text-accent-foreground mx-auto mb-1" />
           <p className="text-xl font-bold">{memories.length + scheduledMessages.length}</p>
-          <p className="text-xs text-muted-foreground">Total Items</p>
+          <p className="text-xs text-muted-foreground">Total Treasures</p>
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex bg-secondary rounded-xl p-1 mb-6 w-fit">
-        {[[`memories`, 'Memories', Heart], [`messages`, 'Letters', Mail]].map(([k, label, TabIcon]) => {
+        {[['memories', 'Memories', Heart], ['messages', 'Letters', Mail]].map(([k, label, TabIcon]) => {
           const TIcon = TabIcon;
           return (
             <button key={k} onClick={() => setActiveTab(k)} className={cn(
@@ -191,7 +331,6 @@ export default function LegacyVault() {
         })}
       </div>
 
-      {/* Content */}
       {activeTab === 'memories' && (
         memories.length === 0 ? (
           <div className="text-center py-16 border-2 border-dashed border-border rounded-2xl">
@@ -202,23 +341,7 @@ export default function LegacyVault() {
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {memories.map(m => (
-              <div key={m.id} className="bg-card rounded-[20px] p-5 hover:shadow-lg transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => deleteMemMutation.mutate(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex items-start gap-2 mb-2">
-                  <Shield className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <h3 className="font-semibold text-sm">{m.title}</h3>
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-3 mb-3 ml-6">{m.content}</p>
-                <div className="flex items-center gap-2 ml-6 flex-wrap">
-                  <Badge variant="outline" className="text-xs rounded-lg">{m.category?.replace('_', ' ')}</Badge>
-                  {m.date_of_memory && <span className="text-xs text-muted-foreground">{format(parseISO(m.date_of_memory), 'MMM d, yyyy')}</span>}
-                  {m.people_involved?.length > 0 && <span className="text-xs text-muted-foreground">with {m.people_involved.join(', ')}</span>}
-                </div>
-              </div>
+              <MemoryCard key={m.id} m={m} onDelete={(id) => deleteMemMutation.mutate(id)} />
             ))}
           </div>
         )
@@ -228,46 +351,22 @@ export default function LegacyVault() {
         scheduledMessages.length === 0 ? (
           <div className="text-center py-16 border-2 border-dashed border-border rounded-2xl">
             <Mail className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="font-semibold mb-1">No letters scheduled</p>
-            <p className="text-sm text-muted-foreground">Write messages to be opened by loved ones on special dates.</p>
+            <p className="font-semibold mb-1">No letters sealed yet</p>
+            <p className="text-sm text-muted-foreground">Write something beautiful for someone you love, to be opened when the time is right.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {scheduledMessages.map(m => (
-              <div key={m.id} className="bg-card rounded-[20px] p-5 hover:shadow-lg transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => deleteMsgMutation.mutate(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex items-start gap-2 mb-2">
-                  <Mail className="w-4 h-4 text-chart-3 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-sm">{m.title || `To ${m.recipient_name}`}</p>
-                    <p className="text-xs text-muted-foreground">For {m.recipient_name} · {m.recipient_relationship}</p>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 ml-6">{m.content}</p>
-                <div className="ml-6 flex items-center gap-2 flex-wrap">
-                  {m.delivery_date && (
-                    <div className="flex items-center gap-1.5 bg-chart-3/10 text-chart-3 px-2.5 py-1 rounded-lg text-xs font-medium">
-                      <Lock className="w-3 h-3" />
-                      Opens {format(parseISO(m.delivery_date), 'MMM d, yyyy')}
-                    </div>
-                  )}
-                  <Badge variant="outline" className="text-xs rounded-lg">{m.emotional_tone}</Badge>
-                </div>
-              </div>
+              <MessageCard key={m.id} m={m} onDelete={(id) => deleteMsgMutation.mutate(id)} />
             ))}
           </div>
         )
       )}
 
-      {/* Add to Vault Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
         <DialogContent className="max-w-lg rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 font-lora font-medium">
               <Shield className="w-5 h-5 text-primary" /> Add to Legacy Vault
             </DialogTitle>
           </DialogHeader>
