@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import VoiceRecorder from './VoiceRecorder';
+import VoiceMicButton from '../voice/VoiceMicButton';
 
 export default function ChatInput({ onSend, disabled }) {
   const [message, setMessage] = useState('');
+  const typewriterRef = useRef(null);
 
-  const handleTranscript = (text) => {
-    if (text) {
-      onSend(text);
-    }
+  const typewrite = (text) => {
+    setMessage('');
+    let i = 0;
+    clearInterval(typewriterRef.current);
+    typewriterRef.current = setInterval(() => {
+      i++;
+      setMessage(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(typewriterRef.current);
+        // Auto-send after typewriter
+        setTimeout(() => {
+          onSend(text.trim());
+          setMessage('');
+        }, 600);
+      }
+    }, 40);
+  };
+
+  useEffect(() => () => clearInterval(typewriterRef.current), []);
+
+  const handleVoiceResult = (transcript) => {
+    if (transcript) typewrite(transcript);
   };
 
   const handleSubmit = (e) => {
@@ -37,7 +56,7 @@ export default function ChatInput({ onSend, disabled }) {
           disabled={disabled}
         />
       </div>
-      <VoiceRecorder onTranscript={handleTranscript} disabled={disabled} />
+      <VoiceMicButton onResult={handleVoiceResult} disabled={disabled} />
       <Button
         type="submit"
         disabled={!message.trim() || disabled}
