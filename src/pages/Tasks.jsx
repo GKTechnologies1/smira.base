@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TaskCard from '../components/tasks/TaskCard';
 import TaskForm from '../components/tasks/TaskForm';
+import SmartTaskPanel from '../components/tasks/SmartTaskPanel';
 
 export default function Tasks() {
   const [showForm, setShowForm] = useState(false);
@@ -63,6 +64,8 @@ export default function Tasks() {
           <Plus className="w-4 h-4 mr-2" /> Add Task
         </Button>
       </div>
+
+      <SmartTaskPanel tasks={tasks} journals={[]} />
 
       <Tabs value={filter} onValueChange={setFilter} className="mb-6">
         <TabsList className="rounded-xl">
