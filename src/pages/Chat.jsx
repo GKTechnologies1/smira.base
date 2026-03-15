@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Sparkles, Plus, MessageCircle } from 'lucide-react';
+import { Plus, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MessageBubble from '../components/chat/MessageBubble';
 import ChatInput from '../components/chat/ChatInput';
@@ -47,7 +47,7 @@ export default function Chat() {
     const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const convo = await base44.agents.createConversation({
       agent_name: 'smira',
-      metadata: { name: `Chat — ${today}` },
+      metadata: { name: `Smira · ${today}` },
     });
     setActiveConversation(convo);
     setMessages([]);
@@ -81,12 +81,13 @@ export default function Chat() {
     return (
       <div className="h-screen flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
-          <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-            <Sparkles className="w-10 h-10 text-primary" />
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl"
+            style={{ background: 'linear-gradient(135deg, #0D1B2A, #0a2f26)', border: '1px solid #00C9A720' }}>
+            ✦
           </div>
-          <h2 className="text-2xl font-bold mb-2">Start talking to Smira</h2>
+          <h2 className="text-2xl font-lora font-medium mb-2">Say hello to Smira</h2>
           <p className="text-muted-foreground text-sm mb-6">
-            Tell me about your day, plans, thoughts, or anything on your mind. I'll help you organize, reflect, and remember.
+            Tell me about your day, your plans, a worry, or something on your mind. I'm listening.
           </p>
           <Button onClick={createNewConversation} size="lg" className="rounded-2xl">
             <MessageCircle className="w-4 h-4 mr-2" />
@@ -105,12 +106,13 @@ export default function Chat() {
           <button onClick={() => setShowSidebar(!showSidebar)} className="lg:hidden">
             <MessageCircle className="w-5 h-5 text-muted-foreground" />
           </button>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-primary-foreground" />
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            style={{ background: 'linear-gradient(135deg, #0D1B2A, #0a2f26)', border: '1px solid #00C9A720' }}>
+            ✦
           </div>
           <div>
-            <h3 className="text-sm font-semibold">Smira</h3>
-            <p className="text-xs text-muted-foreground">Your life companion</p>
+            <h3 className="text-sm font-semibold font-lora">Smira</h3>
+            <p className="text-xs text-muted-foreground">Here with you</p>
           </div>
         </div>
         <Button onClick={createNewConversation} variant="outline" size="sm" className="rounded-xl">
