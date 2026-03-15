@@ -9,6 +9,7 @@ import OnThisDay from '../components/home/OnThisDay';
 import DailyCheckIn from '../components/home/DailyCheckIn';
 import CalendarView from '../components/home/CalendarView';
 import SmartReminder from '../components/notifications/SmartReminder';
+import AIInsightsDashboard from '../components/home/AIInsightsDashboard';
 
 export default function Home() {
   const { data: tasks = [] } = useQuery({
@@ -31,6 +32,7 @@ export default function Home() {
         <StatsOverview />
         <OnThisDay />
         <CalendarView />
+        <AIInsightsDashboard />
         <QuickActions />
         <RecentActivity />
       </div>
