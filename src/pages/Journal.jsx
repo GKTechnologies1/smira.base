@@ -121,11 +121,13 @@ export default function Journal() {
           <Button onClick={() => setShowForm(true)} className="rounded-3xl px-6">Write your first entry</Button>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-4">
-          {entries.map(entry => (
-            <JournalEntryCard key={entry.id} entry={entry} onClick={setViewing} />
-          ))}
-        </div>
+        <PullToRefresh onRefresh={() => queryClient.invalidateQueries({ queryKey: ['journal-entries'] })}>
+          <div className="grid md:grid-cols-2 gap-4">
+            {entries.map(entry => (
+              <JournalEntryCard key={entry.id} entry={entry} onClick={setViewing} />
+            ))}
+          </div>
+        </PullToRefresh>
       )}
 
       {/* New/Edit Dialog */}
