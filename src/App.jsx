@@ -60,6 +60,8 @@ const AuthenticatedApp = () => {
         <Route path="/MemoryMap" element={<MemoryMap />} />
         <Route path="/Collaboration" element={<Collaboration />} />
         <Route path="/LegacyVault" element={<LegacyVault />} />
+        <Route path="/Habits" element={<Habits />} />
+        <Route path="/VoiceMemory" element={<VoiceMemory />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
