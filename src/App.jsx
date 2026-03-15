@@ -22,6 +22,7 @@ import Collaboration from './pages/Collaboration';
 import LegacyVault from './pages/LegacyVault';
 import Habits from './pages/Habits';
 import VoiceMemory from './pages/VoiceMemory';
+import People from './pages/People';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         <Route path="/LegacyVault" element={<LegacyVault />} />
         <Route path="/Habits" element={<Habits />} />
         <Route path="/VoiceMemory" element={<VoiceMemory />} />
+        <Route path="/People" element={<People />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
