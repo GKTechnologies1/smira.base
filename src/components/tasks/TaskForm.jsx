@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import VoiceMicButton from '../voice/VoiceMicButton';
+import WaveformPlayer from '../voice/WaveformPlayer';
 
 export default function TaskForm({ task, onSave, onCancel }) {
   const [form, setForm] = useState({
@@ -13,6 +15,8 @@ export default function TaskForm({ task, onSave, onCancel }) {
     due_date: task?.due_date || '',
     due_time: task?.due_time || '',
     status: task?.status || 'pending',
+    voice_transcript: task?.voice_transcript || '',
+    voice_url: task?.voice_url || '',
   });
 
   const handleSubmit = (e) => {
@@ -22,13 +26,17 @@ export default function TaskForm({ task, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Input
-        placeholder="What needs to be done?"
-        value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
-        className="rounded-xl bg-secondary border-none h-12 text-base"
-        required
-      />
+      <div className="flex items-center gap-2">
+        <Input
+          placeholder="What needs to be done?"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          className="rounded-xl bg-secondary border-none h-12 text-base flex-1"
+          required
+        />
+        <VoiceMicButton onResult={(tx, url) => setForm(f => ({ ...f, title: f.title || tx, voice_transcript: tx, voice_url: url }))} size="sm" />
+      </div>
+      {form.voice_url && <WaveformPlayer audioUrl={form.voice_url} transcript={form.voice_transcript} />}
       <Textarea
         placeholder="Details (optional)"
         value={form.description}
