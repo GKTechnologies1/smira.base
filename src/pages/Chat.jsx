@@ -161,6 +161,23 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Talk to Smira */}
+      <div className="px-4 pb-2 pt-1 border-t border-border bg-card/80">
+        <button
+          onClick={() => openTalk('Chat')}
+          className="w-full flex items-center justify-center gap-3 font-lora text-white text-[16px] font-medium rounded-[28px] mb-1"
+          style={{
+            height: 56,
+            background: '#1D9E75',
+            boxShadow: '0 4px 20px #1D9E7530',
+          }}
+        >
+          <Mic className="w-5 h-5" />
+          Talk to Smira
+        </button>
+        <p className="text-xs text-muted-foreground text-center pb-1">Speak naturally in any language.</p>
+      </div>
+
       {/* Input */}
       <ChatInput onSend={sendMessage} disabled={sending} />
     </div>
