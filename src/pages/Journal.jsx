@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Plus, BookOpen, Sun, Mic } from 'lucide-react';
+import PullToRefresh from '../components/layout/PullToRefresh';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import JournalEntryCard from '../components/journal/JournalEntryCard';
@@ -28,6 +29,18 @@ export default function Journal() {
     mutationFn: (data) => editing
       ? base44.entities.JournalEntry.update(editing.id, data)
       : base44.entities.JournalEntry.create(data),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ['journal-entries'] });
+      const prev = queryClient.getQueryData(['journal-entries']);
+      if (!editing) {
+        const optimistic = { ...data, id: `temp-${Date.now()}`, created_date: new Date().toISOString() };
+        queryClient.setQueryData(['journal-entries'], old => [optimistic, ...(old || [])]);
+      }
+      return { prev };
+    },
+    onError: (_err, _data, ctx) => {
+      queryClient.setQueryData(['journal-entries'], ctx?.prev);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
       setShowForm(false);
@@ -38,6 +51,15 @@ export default function Journal() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.JournalEntry.delete(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['journal-entries'] });
+      const prev = queryClient.getQueryData(['journal-entries']);
+      queryClient.setQueryData(['journal-entries'], old => (old || []).filter(e => e.id !== id));
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(['journal-entries'], ctx?.prev);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
       setViewing(null);
