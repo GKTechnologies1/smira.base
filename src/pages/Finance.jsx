@@ -121,10 +121,10 @@ export default function Finance() {
     <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto pb-28">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Finance</h1>
+          <h1 className="text-2xl font-lora font-medium">Finance</h1>
           <p className="text-sm text-muted-foreground mt-1">Track your income and expenses</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="rounded-xl">
+        <Button onClick={() => setShowForm(true)} className="rounded-3xl">
           <Plus className="w-4 h-4 mr-2" /> Add Transaction
         </Button>
       </div>
@@ -164,12 +164,15 @@ export default function Finance() {
           <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
         </div>
       ) : visibleTransactions.length === 0 && transactions.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-3xl bg-chart-4/10 flex items-center justify-center mx-auto mb-4">
-            <Wallet className="w-8 h-8 text-chart-4" />
-          </div>
-          <h3 className="font-semibold mb-2">No transactions yet</h3>
-          <p className="text-sm text-muted-foreground">Start logging your spending or tell Smira</p>
+        <div className="text-center py-20 fade-up fade-up-1">
+          <svg viewBox="0 0 120 100" className="w-32 h-28 mx-auto mb-6 opacity-60" fill="none">
+            <rect x="20" y="30" width="80" height="50" rx="10" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5"/>
+            <path d="M20 45 L100 45" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5"/>
+            <circle cx="72" cy="58" r="7" stroke="#FFB085" strokeWidth="1.5"/>
+            <path d="M72 54 L72 58 L75 60" stroke="#FFB085" strokeWidth="1.2" strokeLinecap="round"/>
+            <path d="M35 58 L52 58" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+          </svg>
+          <p className="font-lora text-lg text-foreground/70 mb-4">Nothing here yet.<br/>What did you spend today?</p>
         </div>
       ) : (
         <div className="space-y-3">
