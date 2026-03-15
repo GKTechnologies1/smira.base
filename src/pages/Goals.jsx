@@ -196,7 +196,7 @@ Give 2-3 specific, actionable suggestions to accelerate progress on this goal. M
                 {milestones.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-4">No milestones yet. Add steps to track your path!</p>
                 ) : (
-                  <MilestonePath milestones={milestones} onToggle={(m) => toggleMilestone.mutate(m)} />
+                  <MilestonePath milestones={milestones} onToggle={(m) => toggleMilestone.mutate(m)} goalId={selectedGoal.id} tasks={tasks} transactions={transactions} />
                 )}
               </div>
 
