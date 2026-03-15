@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Plus, BookOpen, Sun } from 'lucide-react';
+import { Plus, BookOpen, Sun, Mic } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import JournalEntryCard from '../components/journal/JournalEntryCard';
 import JournalForm from '../components/journal/JournalForm';
 import DailyDigest from '../components/journal/DailyDigest';
+import VoiceJournalMode from '../components/voice/VoiceJournalMode';
 
 export default function Journal() {
   const [tab, setTab] = useState('entries'); // entries | digest
@@ -15,6 +16,7 @@ export default function Journal() {
   const [editing, setEditing] = useState(null);
   const [viewing, setViewing] = useState(null);
   const [prefillContent, setPrefillContent] = useState('');
+  const [voiceJournalOpen, setVoiceJournalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: entries = [], isLoading } = useQuery({
@@ -56,9 +58,14 @@ export default function Journal() {
           <h1 className="text-2xl font-bold">Journal</h1>
           <p className="text-sm text-muted-foreground mt-1">Your reflections and daily entries</p>
         </div>
-        <Button onClick={() => { setEditing(null); setPrefillContent(''); setShowForm(true); }} className="rounded-xl">
-          <Plus className="w-4 h-4 mr-2" /> New Entry
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setVoiceJournalOpen(true)} className="rounded-xl gap-2">
+            <Mic className="w-4 h-4" /> Speak your day
+          </Button>
+          <Button onClick={() => { setEditing(null); setPrefillContent(''); setShowForm(true); }} className="rounded-xl">
+            <Plus className="w-4 h-4 mr-2" /> New Entry
+          </Button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -109,6 +116,14 @@ export default function Journal() {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Voice Journal Mode */}
+      {voiceJournalOpen && (
+        <VoiceJournalMode
+          onSave={(data) => { saveMutation.mutate(data); setVoiceJournalOpen(false); }}
+          onDiscard={() => setVoiceJournalOpen(false)}
+        />
+      )}
 
       {/* View Dialog */}
       <Dialog open={!!viewing} onOpenChange={() => setViewing(null)}>
