@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2 } from 'lucide-react';
+import VoiceMicButton from '../voice/VoiceMicButton';
 
 const MOODS = [
   { value: 'grateful', emoji: '🙏', label: 'Grateful' },
@@ -107,13 +108,18 @@ export default function DailyCheckIn() {
             <div className="text-3xl mb-4">{selectedMood?.emoji}</div>
             <p className="text-sm font-medium text-primary mb-1">Smira says:</p>
             <h3 className="text-lg font-semibold mb-6">{followupQuestion}</h3>
-            <textarea
-              value={followupText}
-              onChange={(e) => setFollowupText(e.target.value)}
-              placeholder="Write your thoughts here..."
-              className="w-full rounded-2xl border border-border bg-secondary px-4 py-3 text-sm resize-none min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 mb-4"
-              autoFocus
-            />
+            <div className="relative mb-4">
+              <textarea
+                value={followupText}
+                onChange={(e) => setFollowupText(e.target.value)}
+                placeholder="Write your thoughts here..."
+                className="w-full rounded-2xl border border-border bg-secondary px-4 py-3 text-sm resize-none min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 pr-12"
+                autoFocus
+              />
+              <div className="absolute bottom-3 right-3">
+                <VoiceMicButton onResult={(tx) => setFollowupText(t => t ? t + ' ' + tx : tx)} size="sm" />
+              </div>
+            </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={dismiss} className="flex-1 rounded-xl">Skip</Button>
               <Button onClick={handleFollowupSubmit} disabled={loading} className="flex-1 rounded-xl">
