@@ -99,6 +99,7 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
   const audioUrl = form.media_urls?.[0];
 
   return (
+    <>
     <motion.div
       initial={{ y: '100%' }}
       animate={{ y: 0 }}
