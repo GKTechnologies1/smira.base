@@ -100,7 +100,7 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
 
   return (
     <>
-    <motion.div
+      <motion.div
       initial={{ y: '100%' }}
       animate={{ y: 0 }}
       exit={{ y: '100%' }}
@@ -291,17 +291,17 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
           ) : 'Save changes'}
         </Button>
       </div>
-    </motion.div>
+      </motion.div>
 
-    {showLocationPicker && (
-      <LocationPicker
-        lat={form.lat}
-        lng={form.lng}
-        locationName={form.location_name}
-        onChange={({ lat, lng, location_name }) => setForm(f => ({ ...f, lat, lng, location_name }))}
-        onClose={() => setShowLocationPicker(false)}
-      />
-    )}
-  </>
+      {showLocationPicker && (
+        <LocationPicker
+          lat={form.lat}
+          lng={form.lng}
+          locationName={form.location_name}
+          onChange={({ lat, lng, location_name }) => setForm(f => ({ ...f, lat, lng, location_name }))}
+          onClose={() => setShowLocationPicker(false)}
+        />
+      )}
+    </>
   );
 }
