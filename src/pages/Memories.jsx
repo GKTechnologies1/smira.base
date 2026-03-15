@@ -10,6 +10,7 @@ import { Plus, Heart, Shield } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import SwipeableMemoryCard from '../components/memories/SwipeableMemoryCard';
+import PullToRefresh from '../components/layout/PullToRefresh';
 import EditMemorySheet from '../components/memories/EditMemorySheet';
 import DeleteMemorySheet from '../components/memories/DeleteMemorySheet';
 import MemoryBulkBar from '../components/memories/MemoryBulkBar';
@@ -39,6 +40,16 @@ export default function Memories() {
 
   const saveMutation = useMutation({
     mutationFn: (data) => base44.entities.Memory.create(data),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ['memories'] });
+      const prev = queryClient.getQueryData(['memories']);
+      const optimistic = { ...data, id: `temp-${Date.now()}`, created_date: new Date().toISOString() };
+      queryClient.setQueryData(['memories'], old => [optimistic, ...(old || [])]);
+      return { prev };
+    },
+    onError: (_err, _data, ctx) => {
+      queryClient.setQueryData(['memories'], ctx?.prev);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['memories'] });
       setShowForm(false);
@@ -48,6 +59,15 @@ export default function Memories() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Memory.update(id, data),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['memories'] });
+      const prev = queryClient.getQueryData(['memories']);
+      queryClient.setQueryData(['memories'], old => (old || []).map(m => m.id === id ? { ...m, ...data } : m));
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      queryClient.setQueryData(['memories'], ctx?.prev);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['memories'] });
       setEditingMemory(null);
