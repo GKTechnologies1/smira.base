@@ -84,7 +84,7 @@ export default function AIInsightsDashboard() {
     });
     const topCats = Object.entries(topExpCategories).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k}: $${v.toFixed(0)}`).join(', ');
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are Smira, an empathetic life coach AI. Analyze 30 days of data and give warm, specific life-improvement insights.
+      prompt: `You are Smira, a warm and empathetic life companion. Analyze 30 days of data and give warm, specific life-improvement insights.
 
 DATA:
 - Journal moods (last 30 days): ${moodSummary || 'no data'}
@@ -132,13 +132,13 @@ Return only valid JSON like: [{"title":"...","body":"...","type":"..."},...]`,
               <Brain className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-semibold">AI Life Insights</h2>
-              <p className="text-xs text-muted-foreground">Patterns from the last 30 days</p>
+              <h2 className="font-semibold font-lora">Your Life Patterns</h2>
+              <p className="text-xs text-muted-foreground">Smira's reflections from the last 30 days</p>
             </div>
           </div>
           <Button size="sm" onClick={generateInsights} disabled={loading || !hasData} className="rounded-xl gap-2">
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : insights ? <RefreshCw className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
-            {insights ? 'Refresh' : 'Analyze'}
+            {insights ? 'Refresh' : 'Show insights'}
           </Button>
         </div>
       </div>
@@ -215,7 +215,7 @@ Return only valid JSON like: [{"title":"...","body":"...","type":"..."},...]`,
 
         {insights && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Smira's Insights</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">What Smira Noticed</p>
             {insights.map((insight, i) => {
               const cfg = typeConfig[insight.type] || typeConfig.balance;
               const Icon = cfg.icon;
