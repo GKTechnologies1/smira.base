@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Plus, MessageCircle, Volume2, VolumeX } from 'lucide-react';
+import { Plus, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MessageBubble from '../components/chat/MessageBubble';
 import ChatInput from '../components/chat/ChatInput';
 import { cn } from '@/lib/utils';
-import { speakText } from '../components/chat/VoiceReply';
 
 export default function Chat() {
   const [conversations, setConversations] = useState([]);
@@ -14,8 +13,6 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [muteVoice, setMuteVoice] = useState(false);
-  const prevMessageCountRef = useRef(0);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -25,20 +22,11 @@ export default function Chat() {
   useEffect(() => {
     if (activeConversation?.id) {
       const unsub = base44.agents.subscribeToConversation(activeConversation.id, (data) => {
-        const newMsgs = data.messages || [];
-        // Auto-speak new Smira replies
-        if (!muteVoice && newMsgs.length > prevMessageCountRef.current) {
-          const latest = newMsgs[newMsgs.length - 1];
-          if (latest?.role === 'assistant' && latest?.content) {
-            speakText(latest.content);
-          }
-        }
-        prevMessageCountRef.current = newMsgs.length;
-        setMessages(newMsgs);
+        setMessages(data.messages || []);
       });
       return () => unsub();
     }
-  }, [activeConversation?.id, muteVoice]);
+  }, [activeConversation?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,13 +62,9 @@ export default function Chat() {
     setShowSidebar(false);
   };
 
-  const sendMessage = async (content, isVoice = false) => {
+  const sendMessage = async (content) => {
     setSending(true);
-    await base44.agents.addMessage(activeConversation, {
-      role: 'user',
-      content,
-      metadata: isVoice ? { isVoice: true } : undefined,
-    });
+    await base44.agents.addMessage(activeConversation, { role: 'user', content });
     setSending(false);
   };
 
@@ -131,18 +115,9 @@ export default function Chat() {
             <p className="text-xs text-muted-foreground">Here with you</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setMuteVoice(v => !v)}
-            className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground"
-            title={muteVoice ? 'Unmute Smira voice' : 'Mute Smira voice'}
-          >
-            {muteVoice ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-          <Button onClick={createNewConversation} variant="outline" size="sm" className="rounded-xl">
-            <Plus className="w-4 h-4 mr-1" /> New
-          </Button>
-        </div>
+        <Button onClick={createNewConversation} variant="outline" size="sm" className="rounded-xl">
+          <Plus className="w-4 h-4 mr-1" /> New
+        </Button>
       </div>
 
       {/* Conversation sidebar (mobile overlay, hidden on desktop for simplicity) */}
@@ -179,7 +154,7 @@ export default function Chat() {
           </div>
         )}
         {messages.map((msg, i) => (
-          <MessageBubble key={i} message={msg} muteVoice={muteVoice} />
+          <MessageBubble key={i} message={msg} />
         ))}
         <div ref={messagesEndRef} />
       </div>

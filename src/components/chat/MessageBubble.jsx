@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { ChevronRight, Clock, Loader2, CheckCircle2, AlertCircle, Mic, Volume2 } from 'lucide-react';
+import { ChevronRight, Clock, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { speakText, stopSpeech } from './VoiceReply';
 
 const FunctionDisplay = ({ toolCall }) => {
   const [expanded, setExpanded] = useState(false);
@@ -70,20 +69,8 @@ const FunctionDisplay = ({ toolCall }) => {
   );
 };
 
-export default function MessageBubble({ message, muteVoice }) {
+export default function MessageBubble({ message }) {
   const isUser = message.role === 'user';
-  const isVoice = message.metadata?.isVoice;
-  const [speaking, setSpeaking] = useState(false);
-
-  const handleSpeak = () => {
-    if (speaking) {
-      stopSpeech();
-      setSpeaking(false);
-    } else {
-      setSpeaking(true);
-      speakText(message.content, () => setSpeaking(false));
-    }
-  };
 
   return (
     <motion.div
@@ -109,14 +96,12 @@ export default function MessageBubble({ message, muteVoice }) {
             )}
             style={!isUser ? { border: '1px solid hsl(var(--border) / 0.5)' } : undefined}
           >
+            {/* Shimmer sweep on Smira replies */}
             {!isUser && (
               <span className="absolute inset-0 pointer-events-none shimmer-sweep" />
             )}
             {isUser ? (
-              <div className="flex items-start gap-2">
-                <p className="text-sm leading-relaxed">{message.content}</p>
-                {isVoice && <Mic className="w-3 h-3 text-white/40 flex-shrink-0 mt-1" />}
-              </div>
+              <p className="text-sm leading-relaxed">{message.content}</p>
             ) : (
               <ReactMarkdown
                 className="text-sm prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
@@ -128,18 +113,6 @@ export default function MessageBubble({ message, muteVoice }) {
               </ReactMarkdown>
             )}
           </motion.div>
-        )}
-        {/* Speaker replay for Smira's messages */}
-        {!isUser && message.content && !muteVoice && (
-          <button
-            onClick={handleSpeak}
-            className={cn(
-              "mt-1 ml-1 p-1.5 rounded-xl transition-colors",
-              speaking ? "text-teal" : "text-muted-foreground/40 hover:text-muted-foreground"
-            )}
-          >
-            <Volume2 className="w-3 h-3" />
-          </button>
         )}
         {message.tool_calls?.length > 0 && (
           <div className="space-y-1">
