@@ -37,6 +37,7 @@ export default function ChatInput({ onSend, disabled }) {
           disabled={disabled}
         />
       </div>
+      <VoiceRecorder onTranscript={handleTranscript} disabled={disabled} />
       <Button
         type="submit"
         disabled={!message.trim() || disabled}
