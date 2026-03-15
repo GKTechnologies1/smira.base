@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { X } from 'lucide-react';
+import VoiceMicButton from '../voice/VoiceMicButton';
+import WaveformPlayer from '../voice/WaveformPlayer';
 
 const moods = [
   { value: 'joyful', label: '😊 Joyful' },
@@ -34,6 +36,8 @@ export default function JournalForm({ entry, onSave, onCancel }) {
     mood: entry?.mood || '',
     type: entry?.type || 'daily_reflection',
     tags: entry?.tags || [],
+    voice_transcript: entry?.voice_transcript || '',
+    voice_url: entry?.voice_url || '',
   });
   const [tagInput, setTagInput] = useState('');
 
@@ -61,13 +65,19 @@ export default function JournalForm({ entry, onSave, onCancel }) {
         onChange={(e) => setForm({ ...form, title: e.target.value })}
         className="rounded-xl text-lg font-medium border-none bg-secondary px-4 py-3 h-auto"
       />
-      <Textarea
-        placeholder="What's on your mind today?"
-        value={form.content}
-        onChange={(e) => setForm({ ...form, content: e.target.value })}
-        className="rounded-xl min-h-[200px] border-none bg-secondary px-4 py-3 resize-none"
-        required
-      />
+      <div className="relative">
+        <Textarea
+          placeholder="What's on your mind today?"
+          value={form.content}
+          onChange={(e) => setForm({ ...form, content: e.target.value })}
+          className="rounded-xl min-h-[200px] border-none bg-secondary px-4 py-3 resize-none pr-12"
+          required
+        />
+        <div className="absolute bottom-3 right-3">
+          <VoiceMicButton onResult={(tx, url) => setForm(f => ({ ...f, content: f.content ? f.content + '\n' + tx : tx, voice_transcript: tx, voice_url: url }))} size="sm" />
+        </div>
+      </div>
+      {form.voice_url && <WaveformPlayer audioUrl={form.voice_url} transcript={form.voice_transcript} />}
       <div className="flex flex-wrap gap-3">
         <Select value={form.mood} onValueChange={(v) => setForm({ ...form, mood: v })}>
           <SelectTrigger className="w-44 rounded-xl">
