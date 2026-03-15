@@ -143,7 +143,7 @@ export default function LegacyVault() {
             <Shield className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Legacy Vault</h1>
+            <h1 className="text-2xl font-lora font-medium">Legacy Vault</h1>
             <p className="text-sm text-muted-foreground">Your most precious memories, protected</p>
           </div>
         </div>
@@ -202,7 +202,7 @@ export default function LegacyVault() {
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {memories.map(m => (
-              <div key={m.id} className="bg-gradient-to-br from-card to-primary/5 border border-primary/20 rounded-2xl p-5 hover:shadow-lg transition-all group relative">
+              <div key={m.id} className="bg-card rounded-[20px] p-5 hover:shadow-lg transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => deleteMemMutation.mutate(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
@@ -234,7 +234,7 @@ export default function LegacyVault() {
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {scheduledMessages.map(m => (
-              <div key={m.id} className="bg-gradient-to-br from-card to-chart-3/5 border border-chart-3/20 rounded-2xl p-5 hover:shadow-lg transition-all group relative">
+              <div key={m.id} className="bg-card rounded-[20px] p-5 hover:shadow-lg transition-all group relative vault-glow" style={{ border: '1px solid hsl(var(--border) / 0.5)' }}>
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => deleteMsgMutation.mutate(m.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
