@@ -60,6 +60,10 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
         visibility: memory.is_in_vault ? 'legacy' : 'private',
         is_in_vault: memory.is_in_vault || false,
         media_urls: memory.media_urls || [],
+        people_involved: memory.people_involved || [],
+        lat: memory.lat || null,
+        lng: memory.lng || null,
+        location_name: memory.location_name || '',
       });
     }
   }, [memory]);
@@ -211,6 +215,26 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
           </div>
         </div>
 
+        {/* People tagger */}
+        <PeopleTagger
+          value={form.people_involved}
+          onChange={(v) => setForm(f => ({ ...f, people_involved: v }))}
+          description={form.content}
+        />
+
+        {/* Location */}
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-2">Location</p>
+          <button
+            onClick={() => setShowLocationPicker(true)}
+            className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-xl bg-secondary text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <MapPin className="w-4 h-4 flex-shrink-0" />
+            {form.location_name || 'Add a location'}
+            {form.lat && <span className="ml-auto text-xs text-primary">📍 Set</span>}
+          </button>
+        </div>
+
         {/* Voice section */}
         <div className="border border-border rounded-xl p-3 space-y-3">
           <p className="text-xs font-medium text-muted-foreground">Voice recording</p>
@@ -267,5 +291,16 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
         </Button>
       </div>
     </motion.div>
+
+    {showLocationPicker && (
+      <LocationPicker
+        lat={form.lat}
+        lng={form.lng}
+        locationName={form.location_name}
+        onChange={({ lat, lng, location_name }) => setForm(f => ({ ...f, lat, lng, location_name }))}
+        onClose={() => setShowLocationPicker(false)}
+      />
+    )}
+  </>
   );
 }
