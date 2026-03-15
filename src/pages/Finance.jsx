@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import TransactionCard from '../components/finance/TransactionCard';
 import TransactionForm from '../components/finance/TransactionForm';
 import BudgetOverview from '../components/finance/BudgetOverview';
+import SpendingForecast from '../components/finance/SpendingForecast';
+import SavingsInsights from '../components/finance/SavingsInsights';
 
 export default function Finance() {
   const [showForm, setShowForm] = useState(false);
@@ -69,6 +71,8 @@ export default function Finance() {
       </div>
 
       <BudgetOverview transactions={transactions} />
+      <SpendingForecast transactions={transactions} />
+      <SavingsInsights transactions={transactions} />
 
       {/* Transactions */}
       {isLoading ? (

@@ -19,6 +19,7 @@ import Goals from './pages/Goals';
 import Analytics from './pages/Analytics';
 import MemoryMap from './pages/MemoryMap';
 import Collaboration from './pages/Collaboration';
+import LegacyVault from './pages/LegacyVault';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,6 +57,7 @@ const AuthenticatedApp = () => {
         <Route path="/Analytics" element={<Analytics />} />
         <Route path="/MemoryMap" element={<MemoryMap />} />
         <Route path="/Collaboration" element={<Collaboration />} />
+        <Route path="/LegacyVault" element={<LegacyVault />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
