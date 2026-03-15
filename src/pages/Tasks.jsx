@@ -20,6 +20,12 @@ export default function Tasks() {
     queryFn: () => base44.entities.Task.list('-created_date', 100),
   });
 
+  const { data: journals = [] } = useQuery({
+    queryKey: ['journals-tasks'],
+    queryFn: () => base44.entities.JournalEntry.list('-created_date', 14),
+    staleTime: 120000,
+  });
+
   const saveMutation = useMutation({
     mutationFn: (data) => editing
       ? base44.entities.Task.update(editing.id, data)
@@ -65,7 +71,7 @@ export default function Tasks() {
         </Button>
       </div>
 
-      <SmartTaskPanel tasks={tasks} journals={[]} />
+      <SmartTaskPanel tasks={tasks} journals={journals} />
 
       <Tabs value={filter} onValueChange={setFilter} className="mb-6">
         <TabsList className="rounded-xl">
