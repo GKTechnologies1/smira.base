@@ -60,7 +60,7 @@ export default function Finance() {
     setRemovedIds(prev => [...prev, id]);
 
     let undone = false;
-    const toastId = toast('Transaction removed', {
+    const toastId = toast('Entry removed', {
       duration: 5000,
       action: {
         label: 'Undo',

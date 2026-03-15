@@ -101,10 +101,11 @@ export default function Tasks() {
         <div className="space-y-3">
           {filtered.map(task => (
             <TaskCard
-              key={task.id}
-              task={task}
-              onToggle={(t) => toggleMutation.mutate(t)}
-              onClick={(t) => { setEditing(t); setShowForm(true); }}
+            key={task.id}
+            task={task}
+            onToggle={(t) => toggleMutation.mutate(t)}
+            onClick={(t) => { setEditing(t); setShowForm(true); }}
+            onDelete={(id) => deleteMutation.mutate(id)}
             />
           ))}
         </div>
