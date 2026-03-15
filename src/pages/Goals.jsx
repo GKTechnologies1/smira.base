@@ -281,6 +281,35 @@ Give 2-3 specific, actionable suggestions to accelerate progress on this goal. M
         </DialogContent>
       </Dialog>
 
+      {/* Delete Goal confirm */}
+      <Dialog open={!!deletingGoal} onOpenChange={() => setDeletingGoal(null)}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          <DialogHeader><DialogTitle>Delete this goal?</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">"{deletingGoal?.title}" will be permanently removed.</p>
+          <div className="flex gap-3 justify-end pt-2">
+            <Button variant="outline" onClick={() => setDeletingGoal(null)} className="rounded-xl">Cancel</Button>
+            <Button variant="destructive" onClick={() => deleteGoal.mutate(deletingGoal?.id)} className="rounded-xl">Delete</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Goal sheet */}
+      <AnimatePresence>
+        {editingGoal && (
+          <>
+            <motion.div key="backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/40" onClick={() => setEditingGoal(null)} />
+            <EditGoalSheet
+              key="edit-sheet"
+              goal={editingGoal}
+              onSave={(data) => updateGoal.mutate({ id: editingGoal.id, data })}
+              onClose={() => setEditingGoal(null)}
+              isSaving={updateGoal.isPending}
+            />
+          </>
+        )}
+      </AnimatePresence>
+
       {/* New Goal form */}
       <Dialog open={showGoalForm} onOpenChange={setShowGoalForm}>
         <DialogContent className="max-w-lg rounded-2xl">
