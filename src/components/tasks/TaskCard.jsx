@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, Clock } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Pencil, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,9 +16,10 @@ const categoryLabels = {
   errands: 'Errands', finance: 'Finance', social: 'Social', learning: 'Learning', other: 'Other'
 };
 
-export default function TaskCard({ task, onToggle, onClick }) {
+export default function TaskCard({ task, onToggle, onClick, onDelete }) {
   const isDone = task.status === 'completed';
   const [justDone, setJustDone] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const handleToggle = (e) => {
     e.stopPropagation();
@@ -30,10 +31,12 @@ export default function TaskCard({ task, onToggle, onClick }) {
   return (
     <motion.div
       layout
-      animate={isDone ? { opacity: 0.6, x: 4 } : { opacity: 1, x: 0 }}
+      animate={isDone ? { opacity: 0.55, x: 3 } : { opacity: 1, x: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex items-start gap-3 p-4 bg-card rounded-[20px] hover:shadow-sm transition-shadow group cursor-pointer"
+      className="flex items-start gap-3 p-4 bg-card rounded-[20px] transition-shadow group cursor-pointer relative overflow-hidden"
       style={{ border: '1px solid hsl(var(--border) / 0.5)' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={() => onClick(task)}
     >
       <button onClick={handleToggle} className="mt-0.5 flex-shrink-0 relative">
@@ -82,6 +85,37 @@ export default function TaskCard({ task, onToggle, onClick }) {
           )}
         </div>
       </div>
+
+      {/* Hover action buttons */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 8 }}
+            transition={{ duration: 0.15 }}
+            className="flex items-center gap-1 flex-shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); onClick(task); }}
+              className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-amber-600 transition-colors"
+              title="Edit"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            {onDelete && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}
+                className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                title="Delete"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
