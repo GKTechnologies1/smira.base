@@ -64,7 +64,7 @@ export default function SmartTaskPanel({ tasks = [], journals = [] }) {
     }));
 
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are Smira, an AI life companion. Based on the user's data, pick the top 3 tasks for today and give a brief, warm reason for each.
+      prompt: `You are Smira, a warm and intuitive life companion. Based on the user's data, pick the top 3 tasks for today and give a brief, warm reason for each.
 
 Current energy level: ${energy.label} (hour: ${new Date().getHours()})
 Recent moods (last 7 days): ${recentMoods.join(', ') || 'unknown'}
@@ -111,7 +111,7 @@ Return EXACTLY 3 task recommendations. For each, include the exact task title, a
           </div>
           <div className="text-left">
             <p className="text-sm font-semibold">Smira's Focus for Today</p>
-            <p className="text-xs text-muted-foreground">AI-ranked priorities based on your energy & patterns</p>
+            <p className="text-xs text-muted-foreground">Your focus plan for today</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ Return EXACTLY 3 task recommendations. For each, include the exact task title, a
               </div>
             </>
           ) : (
-            <p className="text-xs text-muted-foreground py-2">Tap to generate today's focus plan</p>
+            <p className="text-xs text-muted-foreground py-2">Smira is thinking about your day…</p>
           )}
         </div>
       )}
