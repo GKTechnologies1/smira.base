@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import VoiceMicButton from '../voice/VoiceMicButton';
 
 const MOODS = [
@@ -55,7 +55,7 @@ export default function DailyCheckIn() {
     if (!followupText.trim()) { dismiss(); return; }
     setLoading(true);
     await base44.entities.JournalEntry.create({
-      title: `${greeting} check-in — feeling ${selectedMood.label}`,
+      title: `${greeting} check-in, feeling ${selectedMood.label}`,
       content: followupText.trim(),
       mood: selectedMood.value,
       type: 'daily_reflection',
@@ -77,8 +77,9 @@ export default function DailyCheckIn() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm p-4">
       <div className="w-full max-w-md text-center">
-        <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-          <Sparkles className="w-8 h-8 text-primary" />
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl"
+          style={{ background: 'linear-gradient(135deg, #0D1B2A, #0a2f26)', border: '1px solid #00C9A720' }}>
+          ✦
         </div>
 
         {step === 'mood' && (
@@ -106,7 +107,7 @@ export default function DailyCheckIn() {
         {step === 'followup' && (
           <>
             <div className="text-3xl mb-4">{selectedMood?.emoji}</div>
-            <p className="text-sm font-medium text-primary mb-1">Smira says:</p>
+            <p className="text-sm font-medium text-primary mb-1">✦</p>
             <h3 className="text-lg font-semibold mb-6">{followupQuestion}</h3>
             <div className="relative mb-4">
               <textarea
