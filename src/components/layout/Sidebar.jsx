@@ -138,15 +138,31 @@ export default function Sidebar() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border space-y-1">
+          <button
+            onClick={() => setDarkMode(d => !d)}
+            className="w-full flex items-center gap-2 text-xs text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors px-3 py-2 rounded-xl hover:bg-sidebar-accent select-none"
+          >
+            {darkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            {darkMode ? 'Light mode' : 'Dark mode'}
+          </button>
+          <button
+            onClick={() => setShowDeleteAccount(true)}
+            className="w-full flex items-center gap-2 text-xs text-destructive/50 hover:text-destructive transition-colors px-3 py-2 rounded-xl hover:bg-sidebar-accent select-none"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Delete Account
+          </button>
           <button
             onClick={() => base44.auth.logout()}
-            className="w-full text-xs text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors text-center py-2 rounded-xl hover:bg-sidebar-accent"
+            className="w-full text-xs text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors text-center py-2 rounded-xl hover:bg-sidebar-accent select-none"
           >
             Sign Out
           </button>
         </div>
       </aside>
+
+      {showDeleteAccount && <AccountDeletion onClose={() => setShowDeleteAccount(false)} />}
     </>
   );
 }
