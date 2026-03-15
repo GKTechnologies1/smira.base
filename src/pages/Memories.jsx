@@ -182,6 +182,7 @@ export default function Memories() {
           </Button>
         </motion.div>
       ) : (
+        <PullToRefresh onRefresh={() => queryClient.invalidateQueries({ queryKey: ['memories'] })}>
         <div className="grid md:grid-cols-2 gap-4">
           <AnimatePresence mode="popLayout">
             {visibleMemories.map((memory, i) => (
@@ -206,6 +207,7 @@ export default function Memories() {
             ))}
           </AnimatePresence>
         </div>
+        </PullToRefresh>
       )}
 
       {/* Backdrop for sheets */}
