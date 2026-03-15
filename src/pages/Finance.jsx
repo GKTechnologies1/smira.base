@@ -6,6 +6,7 @@ import { Plus, Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import TransactionCard from '../components/finance/TransactionCard';
 import TransactionForm from '../components/finance/TransactionForm';
+import BudgetOverview from '../components/finance/BudgetOverview';
 
 export default function Finance() {
   const [showForm, setShowForm] = useState(false);
@@ -66,6 +67,8 @@ export default function Finance() {
           </p>
         </div>
       </div>
+
+      <BudgetOverview transactions={transactions} />
 
       {/* Transactions */}
       {isLoading ? (
