@@ -177,8 +177,16 @@ Give 2-3 specific, actionable suggestions to accelerate progress on this goal. M
           {selectedGoal && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" /> {selectedGoal.title}
+                <DialogTitle className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2"><Target className="w-5 h-5 text-primary" /> {selectedGoal.title}</span>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => setEditingGoal(selectedGoal)} className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setDeletingGoal(selectedGoal)} className="p-1.5 rounded-lg hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </DialogTitle>
               </DialogHeader>
 
