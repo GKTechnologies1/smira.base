@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Plus, MessageCircle } from 'lucide-react';
+import { Plus, MessageCircle, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MessageBubble from '../components/chat/MessageBubble';
 import ChatInput from '../components/chat/ChatInput';
 import { cn } from '@/lib/utils';
+import { useTalk } from '../components/talk/TalkContext';
 
 export default function Chat() {
   const [conversations, setConversations] = useState([]);
