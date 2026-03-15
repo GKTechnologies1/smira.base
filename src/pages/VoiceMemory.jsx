@@ -31,7 +31,10 @@ export default function VoiceMemory() {
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mr = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    const mimeType = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4'
+      : MediaRecorder.isTypeSupported('audio/ogg') ? 'audio/ogg'
+      : '';
+    const mr = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
     chunksRef.current = [];
     mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
     mr.onstop = handleStop;
@@ -50,8 +53,10 @@ export default function VoiceMemory() {
     setProcessing(true);
     setResult(null);
     setSaved(false);
-    const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-    const file = new File([blob], 'voice_memory.webm', { type: 'audio/webm' });
+    const mimeType = chunksRef.current[0]?.type || 'audio/mp4';
+    const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp4') ? 'mp4' : 'mp3';
+    const blob = new Blob(chunksRef.current, { type: mimeType });
+    const file = new File([blob], `voice_memory.${ext}`, { type: mimeType });
 
     // Upload audio
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
