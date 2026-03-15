@@ -25,11 +25,20 @@ export default function Chat() {
   useEffect(() => {
     if (activeConversation?.id) {
       const unsub = base44.agents.subscribeToConversation(activeConversation.id, (data) => {
-        setMessages(data.messages || []);
+        const newMsgs = data.messages || [];
+        // Auto-speak new Smira replies
+        if (!muteVoice && newMsgs.length > prevMessageCountRef.current) {
+          const latest = newMsgs[newMsgs.length - 1];
+          if (latest?.role === 'assistant' && latest?.content) {
+            speakText(latest.content);
+          }
+        }
+        prevMessageCountRef.current = newMsgs.length;
+        setMessages(newMsgs);
       });
       return () => unsub();
     }
-  }, [activeConversation?.id]);
+  }, [activeConversation?.id, muteVoice]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
