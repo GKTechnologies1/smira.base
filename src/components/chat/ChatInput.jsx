@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import VoiceRecorder from './VoiceRecorder';
 
 export default function ChatInput({ onSend, disabled }) {
   const [message, setMessage] = useState('');
+
+  const handleTranscript = (text) => {
+    if (text) {
+      onSend(text);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
