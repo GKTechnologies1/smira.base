@@ -7,6 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import VoiceMicButton from '../voice/VoiceMicButton';
 import WaveformPlayer from '../voice/WaveformPlayer';
+import PeopleTagger from './PeopleTagger';
+import LocationPicker from './LocationPicker';
+import { MapPin } from 'lucide-react';
 
 const TONES = [
   { value: 'joyful', label: 'Joyful', emoji: '😊' },
@@ -34,7 +37,12 @@ export default function EditMemorySheet({ memory, onSave, onClose, isSaving }) {
     visibility: 'private',
     is_in_vault: false,
     media_urls: [],
+    people_involved: [],
+    lat: null,
+    lng: null,
+    location_name: '',
   });
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [saved, setSaved] = useState(false);
   const [rerecording, setRerecording] = useState(false);
