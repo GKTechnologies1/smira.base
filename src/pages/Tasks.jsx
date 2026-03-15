@@ -63,10 +63,10 @@ export default function Tasks() {
     <div className="p-4 md:p-8 pt-16 lg:pt-8 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Tasks</h1>
+          <h1 className="text-2xl font-lora font-medium">Tasks</h1>
           <p className="text-sm text-muted-foreground mt-1">Stay on top of your to-dos</p>
         </div>
-        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="rounded-xl">
+        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="rounded-3xl">
           <Plus className="w-4 h-4 mr-2" /> Add Task
         </Button>
       </div>
@@ -86,12 +86,16 @@ export default function Tasks() {
           <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-3xl bg-chart-3/10 flex items-center justify-center mx-auto mb-4">
-            <CheckSquare className="w-8 h-8 text-chart-3" />
-          </div>
-          <h3 className="font-semibold mb-2">No tasks here</h3>
-          <p className="text-sm text-muted-foreground">Add a task or tell Smira about your plans</p>
+        <div className="text-center py-20 fade-up fade-up-1">
+          <svg viewBox="0 0 120 100" className="w-32 h-28 mx-auto mb-6 opacity-60" fill="none">
+            <rect x="25" y="18" width="70" height="65" rx="8" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5"/>
+            <path d="M38 40 L50 52 L70 32" stroke="#00C9A7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M38 60 L82 60" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+            <path d="M38 70 L70 70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeLinecap="round" opacity="0.25"/>
+          </svg>
+          <p className="font-lora text-lg text-foreground/70 mb-4">
+            {filter === 'completed' ? 'No completed tasks yet.' : 'Your list is clear. Enjoy the calm.'}
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
