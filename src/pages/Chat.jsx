@@ -179,7 +179,7 @@ export default function Chat() {
           </div>
         )}
         {messages.map((msg, i) => (
-          <MessageBubble key={i} message={msg} />
+          <MessageBubble key={i} message={msg} muteVoice={muteVoice} />
         ))}
         <div ref={messagesEndRef} />
       </div>
