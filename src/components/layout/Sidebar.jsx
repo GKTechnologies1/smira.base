@@ -21,6 +21,8 @@ const navItems = [
   { path: '/MemoryMap', label: 'Memory Map', icon: Map },
   { path: '/Collaboration', label: 'Shared Calendar', icon: Users },
   { path: '/LegacyVault', label: 'Legacy Vault', icon: Shield },
+  { path: '/Habits', label: 'Daily Habits', icon: Flame },
+  { path: '/VoiceMemory', label: 'Voice Memory', icon: Mic },
 ];
 
 export default function Sidebar() {

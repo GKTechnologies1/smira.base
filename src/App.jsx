@@ -20,6 +20,8 @@ import Analytics from './pages/Analytics';
 import MemoryMap from './pages/MemoryMap';
 import Collaboration from './pages/Collaboration';
 import LegacyVault from './pages/LegacyVault';
+import Habits from './pages/Habits';
+import VoiceMemory from './pages/VoiceMemory';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
