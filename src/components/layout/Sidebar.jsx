@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   MessageCircle, BookOpen, CheckSquare, Wallet, 
-  Heart, Clock, Mail, Menu, X, Sparkles, Target, BarChart2, Map, Users, Shield
+  Heart, Clock, Mail, Menu, X, Sparkles, Target, BarChart2, Map, Users, Shield, Flame, Mic
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
