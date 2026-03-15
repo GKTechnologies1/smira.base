@@ -15,7 +15,7 @@ const categoryLabels = {
 const SWIPE_THRESHOLD = 80;
 const REVEAL_WIDTH = 130;
 
-export default function SwipeableTransactionCard({ transaction, onEdit, onDelete, selected, onLongPress, selectionMode }) {
+export default function SwipeableTransactionCard({ transaction, onEdit, onDelete, selected, onLongPress, selectionMode, onClick }) {
   const x = useMotionValue(0);
   const [revealed, setRevealed] = useState(false);
   const [showDesktopMenu, setShowDesktopMenu] = useState(false);
@@ -84,6 +84,7 @@ export default function SwipeableTransactionCard({ transaction, onEdit, onDelete
             "flex items-center gap-4 p-4 bg-card border border-border transition-all cursor-pointer rounded-2xl",
             selected && "ring-2 ring-primary bg-primary/5"
           )}
+          onClick={selectionMode ? onClick : undefined}
           onMouseEnter={() => setShowDesktopMenu(true)}
           onMouseLeave={() => setShowDesktopMenu(false)}
         >
