@@ -7,12 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Target, Loader2, Sparkles, TrendingUp, CheckCircle2, DollarSign, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Target, Loader2, Sparkles, ChevronRight, TrendingUp, CheckCircle2, DollarSign } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { AnimatePresence, motion } from 'framer-motion';
-import { toast } from 'sonner';
 import MilestonePath from '../components/goals/MilestonePath';
-import EditGoalSheet from '../components/goals/EditGoalSheet';
 
 const CATEGORIES = ['health', 'career', 'relationships', 'finance', 'learning', 'creativity', 'mindfulness', 'other'];
 const catColors = {
@@ -30,8 +27,6 @@ export default function Goals() {
   const [msForm, setMsForm] = useState({ title: '', description: '', target_date: '', linked_finance_amount: '' });
   const [smiraSuggestion, setSmiraSuggestion] = useState('');
   const [loadingSuggestion, setLoadingSuggestion] = useState(false);
-  const [editingGoal, setEditingGoal] = useState(null);
-  const [deletingGoal, setDeletingGoal] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: goals = [], isLoading } = useQuery({
@@ -60,26 +55,6 @@ export default function Goals() {
   const createGoal = useMutation({
     mutationFn: (d) => base44.entities.Goal.create(d),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['goals'] }); setShowGoalForm(false); setGoalForm({ title: '', description: '', category: 'other', target_date: '' }); },
-  });
-
-  const updateGoal = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Goal.update(id, data),
-    onSuccess: (_, { id, data }) => {
-      queryClient.setQueryData(['goals'], old => (old || []).map(g => g.id === id ? { ...g, ...data } : g));
-      setSelectedGoal(prev => prev ? { ...prev, ...data } : prev);
-      setEditingGoal(null);
-      toast.success('Goal updated');
-    },
-  });
-
-  const deleteGoal = useMutation({
-    mutationFn: (id) => base44.entities.Goal.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
-      setSelectedGoal(null);
-      setDeletingGoal(null);
-      toast('Goal deleted');
-    },
   });
 
   const createMilestone = useMutation({
@@ -177,16 +152,8 @@ Give 2-3 specific, actionable suggestions to accelerate progress on this goal. M
           {selectedGoal && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2"><Target className="w-5 h-5 text-primary" /> {selectedGoal.title}</span>
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => setEditingGoal(selectedGoal)} className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setDeletingGoal(selectedGoal)} className="p-1.5 rounded-lg hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                <DialogTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" /> {selectedGoal.title}
                 </DialogTitle>
               </DialogHeader>
 
@@ -280,35 +247,6 @@ Give 2-3 specific, actionable suggestions to accelerate progress on this goal. M
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Delete Goal confirm */}
-      <Dialog open={!!deletingGoal} onOpenChange={() => setDeletingGoal(null)}>
-        <DialogContent className="max-w-sm rounded-2xl">
-          <DialogHeader><DialogTitle>Delete this goal?</DialogTitle></DialogHeader>
-          <p className="text-sm text-muted-foreground">"{deletingGoal?.title}" will be permanently removed.</p>
-          <div className="flex gap-3 justify-end pt-2">
-            <Button variant="outline" onClick={() => setDeletingGoal(null)} className="rounded-xl">Cancel</Button>
-            <Button variant="destructive" onClick={() => deleteGoal.mutate(deletingGoal?.id)} className="rounded-xl">Delete</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Goal sheet */}
-      <AnimatePresence>
-        {editingGoal && (
-          <>
-            <motion.div key="backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/40" onClick={() => setEditingGoal(null)} />
-            <EditGoalSheet
-              key="edit-sheet"
-              goal={editingGoal}
-              onSave={(data) => updateGoal.mutate({ id: editingGoal.id, data })}
-              onClose={() => setEditingGoal(null)}
-              isSaving={updateGoal.isPending}
-            />
-          </>
-        )}
-      </AnimatePresence>
 
       {/* New Goal form */}
       <Dialog open={showGoalForm} onOpenChange={setShowGoalForm}>

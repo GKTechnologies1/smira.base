@@ -6,14 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Mail, Clock, PartyPopper, Zap, CheckCircle2, DollarSign, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Mail, Clock, PartyPopper, Zap, CheckCircle2, DollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format, differenceInDays, parseISO } from 'date-fns';
-import { AnimatePresence, motion } from 'framer-motion';
-import { toast } from 'sonner';
 import ConditionalTriggerForm from '../components/messages/ConditionalTriggerForm';
-import EditMessageSheet from '../components/messages/EditMessageSheet';
 
 const toneLabels = { loving: 'Loving', encouraging: 'Encouraging', reflective: 'Reflective', celebratory: 'Celebratory', advisory: 'Advisory', nostalgic: 'Nostalgic' };
 const relationLabels = { self: 'Myself', child: 'Child', spouse: 'Spouse', parent: 'Parent', sibling: 'Sibling', friend: 'Friend', grandchild: 'Grandchild', other: 'Other' };
@@ -76,9 +73,6 @@ export default function FutureMessages() {
   const [showForm, setShowForm] = useState(false);
   const [filter, setFilter] = useState('all');
   const [form, setForm] = useState(emptyForm);
-  const [viewingMsg, setViewingMsg] = useState(null);
-  const [editingMsg, setEditingMsg] = useState(null);
-  const [deletingMsg, setDeletingMsg] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: messages = [], isLoading } = useQuery({
@@ -132,26 +126,6 @@ export default function FutureMessages() {
       queryClient.invalidateQueries({ queryKey: ['future-messages'] });
       setShowForm(false);
       setForm(emptyForm);
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.FutureMessage.update(id, data),
-    onSuccess: (_, { id, data }) => {
-      queryClient.setQueryData(['future-messages'], old => (old || []).map(m => m.id === id ? { ...m, ...data } : m));
-      setViewingMsg(prev => prev ? { ...prev, ...data } : prev);
-      setEditingMsg(null);
-      toast.success('Message updated');
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.FutureMessage.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['future-messages'] });
-      setDeletingMsg(null);
-      setViewingMsg(null);
-      toast('Message deleted');
     },
   });
 
@@ -217,7 +191,7 @@ export default function FutureMessages() {
             const isDelivered = msg.status === 'delivered';
             const isPending = msg.status === 'condition_pending';
             return (
-              <div key={msg.id} onClick={() => setViewingMsg(msg)} className={`bg-card rounded-2xl border p-5 hover:shadow-md transition-all cursor-pointer ${isDelivered ? 'border-primary/30 bg-primary/5' : 'border-border'}`}>
+              <div key={msg.id} className={`bg-card rounded-2xl border p-5 hover:shadow-md transition-all ${isDelivered ? 'border-primary/30 bg-primary/5' : 'border-border'}`}>
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-sm">{msg.title || `To ${msg.recipient_name}`}</h3>
                   <Badge variant="outline" className="text-xs rounded-lg flex-shrink-0 ml-2">
