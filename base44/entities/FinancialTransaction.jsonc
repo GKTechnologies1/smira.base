@@ -1,0 +1,65 @@
+{
+  "name": "FinancialTransaction",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "description": "What the transaction was for"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "income",
+        "expense"
+      ],
+      "default": "expense"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "food",
+        "transport",
+        "housing",
+        "utilities",
+        "entertainment",
+        "health",
+        "shopping",
+        "education",
+        "salary",
+        "freelance",
+        "investment",
+        "gift",
+        "bills",
+        "savings",
+        "other"
+      ],
+      "default": "other"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "note": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "ai_extracted",
+        "voice"
+      ],
+      "default": "manual"
+    }
+  },
+  "required": [
+    "description",
+    "amount",
+    "type"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Person",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Person's full name"
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "family",
+        "friend",
+        "partner",
+        "colleague",
+        "mentor",
+        "other"
+      ],
+      "default": "other"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Profile photo URL"
+    },
+    "birthday": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Personal notes about this person"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "GoalUpdate",
+  "type": "object",
+  "properties": {
+    "goal_id": {
+      "type": "string",
+      "description": "Reference to Goal"
+    },
+    "goal_title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string",
+      "description": "Progress update text"
+    },
+    "ai_summary": {
+      "type": "string",
+      "description": "Smira's summary of this update"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "text",
+        "voice"
+      ],
+      "default": "text"
+    },
+    "progress_delta": {
+      "type": "number",
+      "description": "Progress change %"
+    }
+  },
+  "required": [
+    "goal_id",
+    "content"
+  ]
+}

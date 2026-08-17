@@ -1,0 +1,61 @@
+{
+  "name": "JournalEntry",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title or summary of the journal entry"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full journal entry text"
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "joyful",
+        "grateful",
+        "calm",
+        "neutral",
+        "stressed",
+        "sad",
+        "anxious",
+        "reflective",
+        "motivated",
+        "tired"
+      ],
+      "description": "Emotional mood of the entry"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "daily_reflection",
+        "guided_prompt",
+        "event_reflection",
+        "lesson_learned",
+        "gratitude",
+        "free_write"
+      ],
+      "default": "daily_reflection"
+    },
+    "ai_summary": {
+      "type": "string",
+      "description": "AI-generated summary of the entry"
+    },
+    "is_memory": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this entry is also saved as a memory"
+    }
+  },
+  "required": [
+    "content"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "SharedEvent",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "family",
+        "anniversary",
+        "birthday",
+        "trip",
+        "appointment",
+        "celebration",
+        "other"
+      ],
+      "default": "other"
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails of participants"
+    },
+    "smira_suggestion": {
+      "type": "string",
+      "description": "AI-generated suggestion related to this event"
+    },
+    "group_id": {
+      "type": "string",
+      "description": "Shared group identifier"
+    }
+  },
+  "required": [
+    "title",
+    "date"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "name": "FutureMessage",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the message"
+    },
+    "content": {
+      "type": "string",
+      "description": "The message content"
+    },
+    "recipient_name": {
+      "type": "string",
+      "description": "Who the message is for"
+    },
+    "recipient_relationship": {
+      "type": "string",
+      "enum": [
+        "self",
+        "child",
+        "spouse",
+        "parent",
+        "sibling",
+        "friend",
+        "grandchild",
+        "other"
+      ],
+      "default": "self"
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When to deliver the message (for date-based triggers)"
+    },
+    "occasion": {
+      "type": "string",
+      "enum": [
+        "birthday",
+        "anniversary",
+        "graduation",
+        "milestone",
+        "just_because",
+        "in_case",
+        "holiday",
+        "other"
+      ],
+      "default": "just_because"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "scheduled",
+        "condition_pending",
+        "delivered"
+      ],
+      "default": "draft"
+    },
+    "emotional_tone": {
+      "type": "string",
+      "enum": [
+        "loving",
+        "encouraging",
+        "reflective",
+        "celebratory",
+        "advisory",
+        "nostalgic"
+      ],
+      "default": "loving"
+    },
+    "trigger_type": {
+      "type": "string",
+      "enum": [
+        "date",
+        "savings_goal",
+        "task_completion",
+        "manual"
+      ],
+      "default": "date",
+      "description": "What triggers delivery of this message"
+    },
+    "trigger_savings_target": {
+      "type": "number",
+      "description": "Total savings/income target to trigger delivery"
+    },
+    "trigger_task_count": {
+      "type": "number",
+      "description": "Number of completed tasks needed to trigger"
+    },
+    "trigger_task_category": {
+      "type": "string",
+      "description": "Category of tasks to count toward trigger"
+    },
+    "condition_met": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the trigger condition has been met"
+    }
+  },
+  "required": [
+    "content",
+    "recipient_name"
+  ]
+}

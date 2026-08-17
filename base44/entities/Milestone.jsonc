@@ -1,0 +1,69 @@
+{
+  "name": "Milestone",
+  "type": "object",
+  "properties": {
+    "goal_id": {
+      "type": "string"
+    },
+    "goal_title": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed"
+      ],
+      "default": "pending"
+    },
+    "target_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    },
+    "linked_finance_amount": {
+      "type": "number",
+      "description": "Target savings amount for this milestone"
+    },
+    "sub_tasks": {
+      "type": "array",
+      "description": "Sub-tasks for this milestone",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "done": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "linked_task_category": {
+      "type": "string",
+      "description": "Task category to auto-link from task data"
+    },
+    "linked_savings_current": {
+      "type": "number",
+      "description": "Current savings progress pulled from finance data"
+    }
+  },
+  "required": [
+    "goal_id",
+    "title"
+  ]
+}

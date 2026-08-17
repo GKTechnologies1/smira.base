@@ -1,0 +1,53 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Goal title"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this goal means to you"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "health",
+        "career",
+        "relationships",
+        "finance",
+        "learning",
+        "creativity",
+        "mindfulness",
+        "other"
+      ],
+      "default": "other"
+    },
+    "target_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed",
+        "abandoned"
+      ],
+      "default": "active"
+    },
+    "progress_percent": {
+      "type": "number",
+      "default": 0
+    },
+    "weekly_summary": {
+      "type": "string",
+      "description": "AI-generated weekly progress summary"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "Habit",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "health",
+        "mindfulness",
+        "learning",
+        "fitness",
+        "social",
+        "work",
+        "other"
+      ],
+      "default": "health"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

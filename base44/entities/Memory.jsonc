@@ -1,0 +1,93 @@
+{
+  "name": "Memory",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Memory title"
+    },
+    "content": {
+      "type": "string",
+      "description": "The memory story or description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "life_lesson",
+        "family_story",
+        "milestone",
+        "travel",
+        "achievement",
+        "relationship",
+        "wisdom",
+        "funny_moment",
+        "tradition",
+        "other"
+      ],
+      "default": "other"
+    },
+    "date_of_memory": {
+      "type": "string",
+      "format": "date",
+      "description": "When this memory happened"
+    },
+    "people_involved": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "emotional_tone": {
+      "type": "string",
+      "enum": [
+        "joyful",
+        "bittersweet",
+        "proud",
+        "peaceful",
+        "meaningful"
+      ],
+      "default": "joyful"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "family",
+        "legacy"
+      ],
+      "default": "private"
+    },
+    "is_in_vault": {
+      "type": "boolean",
+      "default": false
+    },
+    "media_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Place name for this memory"
+    },
+    "lat": {
+      "type": "number",
+      "description": "Latitude"
+    },
+    "lng": {
+      "type": "number",
+      "description": "Longitude"
+    }
+  },
+  "required": [
+    "title",
+    "content"
+  ]
+}

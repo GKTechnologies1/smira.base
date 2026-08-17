@@ -1,0 +1,75 @@
+{
+  "name": "Task",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Task details"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "work",
+        "personal",
+        "health",
+        "family",
+        "errands",
+        "finance",
+        "social",
+        "learning",
+        "other"
+      ],
+      "default": "personal"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the task is due"
+    },
+    "due_time": {
+      "type": "string",
+      "description": "Time of the task (e.g. 2:00 PM)"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "ai_extracted",
+        "voice"
+      ],
+      "default": "manual",
+      "description": "How the task was created"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
